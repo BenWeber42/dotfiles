@@ -9,7 +9,7 @@ rofi.matching:                       fuzzy
 
 ! "Fullscreen" Set from: Default
 rofi.fullscreen:                     true
-rofi.padding: 300
+rofi.padding: 500
 ! "Margin between rows" Set from: Default
 rofi.line-margin:                    0
 ! "Separator style (none, dash, solid)" Set from: Default
@@ -103,8 +103,8 @@ rofi.show-icons: true
 ! rofi.filter:                         
 ! "Fake transparency" Set from: Default
 ! rofi.fake-transparency:              false
-! "DPI" Set from: Default
-! rofi.dpi:                            -1
+! "DPI" take from X server
+rofi.dpi:                            0
 ! "Threads to use for string matching" Set from: Default
 ! rofi.threads:                        0
 ! "Scrollbar width" Set from: Default
