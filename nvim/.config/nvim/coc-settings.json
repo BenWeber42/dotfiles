@@ -10,5 +10,14 @@
          }
        }
     }
+  },
+  "list": {
+    "maxHeight": 30
+  },
+  "diagnostic": {
+    "errorSign": "",
+    "warningSign": "",
+    "infoSign": "",
+    "hintSign": ""
   }
 }
