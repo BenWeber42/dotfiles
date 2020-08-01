@@ -6,14 +6,12 @@
       "rootPatterns": [".ccls", "compile_commands.json", ".vim/", ".git/", ".hg/"],
       "initializationOptions": {
          "cache": {
-           "directory": ".ccls-cache"
-         }
-       }
+            "directory": ".ccls-cache"
+        }
+      }
     }
   },
-  "list": {
-    "maxHeight": 30
-  },
+  "python.jediEnabled": false,
   "diagnostic": {
     "errorSign": "",
     "warningSign": "",
