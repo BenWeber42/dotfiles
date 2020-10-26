@@ -4,6 +4,8 @@
 
 [push]
   default = simple
+[pull]
+	ff = only
 
 [diff]
   tool = meld
@@ -19,3 +21,18 @@
   unstage = reset HEAD --
   last = log -1 HEAD
   tree = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative --branches --date-order
+  tree-only = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative --date-order
+
+[core]
+	pager = delta
+
+[color]
+	ui = true
+[delta]
+  dark = true
+  syntax-theme = "Nord"
+  side-by-side = true
+  line-numbers = true
+  minus-style = "syntax auto"
+  line-numbers-minus-style = "red"
+  line-numbers-zero-style = "normal"
