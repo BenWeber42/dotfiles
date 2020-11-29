@@ -151,8 +151,8 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
-hide_edge_borders both
-
+hide_edge_borders smart
+default_border pixel
 
 
 ###############################################################################
@@ -180,6 +180,9 @@ workspace 10 output HDMI-0
 #	tray_output primary
 #        status_command i3status -c ~/.config/i3/status
 #}
+
+# i3lock
+bindsym Control+Shift+l exec i3lock -efc 353a44
 
 bindsym F4 exec rofi -show drun
 

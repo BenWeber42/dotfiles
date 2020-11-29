@@ -1,3 +1,6 @@
+# set hipdi screen to a low dpi resolution
+xrandr --output eDP-1 --mode 1280x720
+
 # turn on numlock
 numlockx on
 
@@ -13,9 +16,6 @@ compton -b &
 # background
 feh --bg-scale ~/pictures/wallpapers/matt-jones-67740.jpg
 
-# screen settings (temporary hack?)
-xrandr --output VGA-1-1 --mode 1280x1024 --right-of HDMI-0
-
 # polybar
 polybar main &
 
@@ -23,4 +23,4 @@ polybar main &
 nm-applet &
 
 # volume tray icon
-volumeicon &
+volctl &
