@@ -152,6 +152,7 @@ window#waybar {
 #pulseaudio.muted {
 	border-radius: 10px;
 	color: #4c566a;
+	color: #6c768a;
 }
 #temperature{
 	color: #88c0d0;
