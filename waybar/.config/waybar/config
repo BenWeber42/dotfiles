@@ -4,9 +4,9 @@
     //"height": 25, // Waybar height (to be removed for auto height)
     // "width": 2560, // Waybar width
     // Choose the order of the modules
-    "modules-left": ["sway/workspaces", "sway/mode", "pulseaudio"],
+    "modules-left": ["sway/workspaces", "sway/mode"],
     "modules-center": ["sway/window"],
-    "modules-right": ["battery", "clock", "tray"],
+    "modules-right": ["pulseaudio", "battery", "clock", "tray"],
     // Modules configuration
     "sway/workspaces": {
       "disable-scroll": true,

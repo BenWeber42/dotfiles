@@ -11,7 +11,7 @@ lxpolkit &
 pcmanfm -d &
 
 # compositor
-compton -b &
+#picom -b &
 
 # background
 feh --bg-scale ~/pictures/wallpapers/matt-jones-67740.jpg

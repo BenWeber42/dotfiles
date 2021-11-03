@@ -32,10 +32,9 @@ Plug 'vim-airline/vim-airline-themes'
 
 " color schemes plugin
 Plug 'flazz/vim-colorschemes'
-" sonokai
 Plug 'sainnhe/sonokai'
-" vim one
 Plug 'rakr/vim-one'
+Plug 'EdenEast/nightfox.nvim'
 
 " onebuddy
 Plug 'tjdevries/colorbuddy.vim'
@@ -69,8 +68,6 @@ Plug 'antoinemadec/coc-fzf'
 " Viewer & Finder for LSP symbols and tags in Vim
 Plug 'liuchengxu/vista.vim'
 
-" indent lines for non-blank lines
-Plug 'Yggdroot/indentLine'
 " indent lines for blank lines
 Plug 'lukas-reineke/indent-blankline.nvim'
 
@@ -79,6 +76,9 @@ Plug 'ryanoasis/vim-devicons'
 
 " CoC IDE features
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+" _graphical_ debugger
+Plug 'puremourning/vimspector'
 
 " All of your Plugins must be added before the following line
 call plug#end()
@@ -129,8 +129,25 @@ set background=dark
 "let g:sonokai_disable_italic_comment = 1
 "colorscheme sonokai
 
-let g:one_allow_italics = 1
-colorscheme one
+"let g:one_allow_italics = 1
+"colorscheme one
+
+lua << EOF
+local nightfox = require('nightfox')
+
+-- This function set the configuration of nightfox. If a value is not passed in the setup function
+-- it will be taken from the default configuration above
+nightfox.setup({
+  fox = "nordfox", -- style
+  styles = {
+    keywords = "italic",
+  },
+})
+
+-- Load the configuration set above and apply the colorscheme
+nightfox.load()
+EOF
+"colorscheme nightfox
 
 "lua require('colorbuddy').colorscheme('onebuddy')
 "colorscheme onebuddy
@@ -365,9 +382,18 @@ inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Indent line settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:indentLine_char = ''
+lua << EOF
+require("indent_blankline").setup {
+    char = "",
+}
+EOF
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Colorizer settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 lua require'colorizer'.setup()
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Vimspector settings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:vimspector_enable_mappings = 'HUMAN'
