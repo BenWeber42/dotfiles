@@ -40,8 +40,6 @@ opt.clipboard:append("unnamedplus")
 opt.updatetime = 500
 
 -- proper sign symbols:
--- For some reason nightfox breaks `LspDiagnosticsSignError`,
--- but it defines `LspDiagnosticsError`, so we use that instead...
 vim.fn.sign_define(
   "DiagnosticSignError",
   { texthl = "DiagnosticSignError", text = "", numhl = "DiagnosticSignError" }
@@ -127,6 +125,15 @@ require("packer").startup(function(use)
 
       nightfox.load()
     end
+  }
+
+  -- highlight word under curosr
+  use {
+    "RRethy/vim-illuminate",
+
+    config = function()
+      vim.g.Illuminate_delay = 500
+    end,
   }
 
 
@@ -377,9 +384,7 @@ require("packer").startup(function(use)
         end
       },
       {
-        -- currently broken, switch back to upstream when fix is merged
-        --'weilbith/nvim-code-action-menu',
-        'filtsin/nvim-code-action-menu',
+        'weilbith/nvim-code-action-menu',
         cmd = 'CodeActionMenu',
       }
     },
@@ -391,8 +396,10 @@ require("packer").startup(function(use)
       local lspconfig = require("lspconfig")
 
       local lsp_signature = require("lsp_signature")
-      local on_attach = function(_, _)
+      local illuminate = require("illuminate")
+      local on_attach = function(client)
         lsp_signature.on_attach()
+        illuminate.on_attach(client)
       end
 
       local capabilities = require('cmp_nvim_lsp').update_capabilities(
