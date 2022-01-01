@@ -386,7 +386,11 @@ require("packer").startup(function(use)
       {
         'weilbith/nvim-code-action-menu',
         cmd = 'CodeActionMenu',
-      }
+      },
+      {
+        "jose-elias-alvarez/null-ls.nvim",
+        requires = "nvim-lua/plenary.nvim",
+      },
     },
 
     -- is this really needed?
@@ -397,6 +401,7 @@ require("packer").startup(function(use)
 
       local lsp_signature = require("lsp_signature")
       local illuminate = require("illuminate")
+
       local on_attach = function(client)
         lsp_signature.on_attach()
         illuminate.on_attach(client)
@@ -445,6 +450,17 @@ require("packer").startup(function(use)
       for server_name, server_config in pairs(servers) do
         lspconfig[server_name].setup(server_config)
       end
+
+      -- null-ls isn't supported by lspconfig
+      local null_ls = require("null-ls")
+      null_ls.setup({
+        sources = {
+          null_ls.builtins.formatting.black,
+          null_ls.builtins.formatting.stylua,
+        },
+        on_attach = on_attach,
+        capabilities = capabilities,
+      })
 
     end,
   }
