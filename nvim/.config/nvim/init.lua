@@ -9,12 +9,12 @@ opt.cursorline = true
 -- enable all mouse support
 opt.mouse = "a"
 -- 80 char column
-opt.colorcolumn = '80'
+opt.colorcolumn = "80"
 -- line numbers
 opt.number = true
 opt.relativenumber = true
 -- remove the weird `~` at the end of buffers
-opt.fillchars:append({ eob = ' ' })
+opt.fillchars:append({ eob = " " })
 -- show trailing spaces
 opt.list = true
 opt.listchars = { trail = "·" }
@@ -41,428 +41,415 @@ opt.updatetime = 500
 
 -- proper sign symbols:
 vim.fn.sign_define(
-  "DiagnosticSignError",
-  { texthl = "DiagnosticSignError", text = "", numhl = "DiagnosticSignError" }
+	"DiagnosticSignError",
+	{ texthl = "DiagnosticSignError", text = "", numhl = "DiagnosticSignError" }
 )
-vim.fn.sign_define(
-  "DiagnosticSignWarn",
-  { texthl = "DiagnosticSignWarn", text = "", numhl = "DiagnosticSignWarn" }
-)
-vim.fn.sign_define(
-  "DiagnosticSignHint",
-  { texthl = "DiagnosticSignHint", text = "", numhl = "DiagnosticSignHint" }
-)
-vim.fn.sign_define(
-  "DiagnosticSignInfo",
-  { texthl = "DiagnosticSignInfo", text = "", numhl = "DiagnosticSignInfo" }
-)
+vim.fn.sign_define("DiagnosticSignWarn", { texthl = "DiagnosticSignWarn", text = "", numhl = "DiagnosticSignWarn" })
+vim.fn.sign_define("DiagnosticSignHint", { texthl = "DiagnosticSignHint", text = "", numhl = "DiagnosticSignHint" })
+vim.fn.sign_define("DiagnosticSignInfo", { texthl = "DiagnosticSignInfo", text = "", numhl = "DiagnosticSignInfo" })
 
 -------------------------------------------------------------------------------
 -- Vim Key bindings
 -------------------------------------------------------------------------------
 local map_key = vim.api.nvim_set_keymap
-vim.g.mapleader = ' '
+vim.g.mapleader = " "
 
 -- easy window navigation
-map_key('n', '<C-J>', '<C-W><C-J>', { noremap = true, silent = true })
-map_key('n', '<C-K>', '<C-W><C-K>', { noremap = true, silent = true })
-map_key('n', '<C-L>', '<C-W><C-L>', { noremap = true, silent = true })
-map_key('n', '<C-H>', '<C-W><C-H>', { noremap = true, silent = true })
+map_key("n", "<C-J>", "<C-W><C-J>", { noremap = true, silent = true })
+map_key("n", "<C-K>", "<C-W><C-K>", { noremap = true, silent = true })
+map_key("n", "<C-L>", "<C-W><C-L>", { noremap = true, silent = true })
+map_key("n", "<C-H>", "<C-W><C-H>", { noremap = true, silent = true })
 -- maximixe window
-map_key('n', '<Leader>m', ':res<CR>', { noremap = true, silent = true })
+map_key("n", "<Leader>m", ":res<CR>", { noremap = true, silent = true })
 -- back to equal window sizes
-map_key('n', '<Leader>n', '<C-W>=', { noremap = true, silent = true })
+map_key("n", "<Leader>n", "<C-W>=", { noremap = true, silent = true })
 
 -- edit nvim config
-map_key('n', '<Leader>c', ':e ~/.config/nvim/init.lua<CR>', { noremap = true, silent = true })
-
+map_key("n", "<Leader>c", ":e ~/.config/nvim/init.lua<CR>", { noremap = true, silent = true })
 
 -------------------------------------------------------------------------------
 -- Plugins
 -------------------------------------------------------------------------------
 require("packer").startup(function(use)
+	-- Packer can manage itself
+	use("wbthomason/packer.nvim")
 
-  -- Packer can manage itself
-  use 'wbthomason/packer.nvim'
+	use({
+		"luukvbaal/stabilize.nvim",
 
-  use {
-    "luukvbaal/stabilize.nvim",
+		config = function()
+			require("stabilize").setup()
+		end,
+	})
 
-    config = function()
-      require("stabilize").setup()
-    end
-  }
+	-- proper grammar parsing
+	use({
+		"nvim-treesitter/nvim-treesitter",
 
-    -- proper grammar parsing
-  use {
-    'nvim-treesitter/nvim-treesitter',
+		run = ":TSUpdate",
 
-    run = ':TSUpdate',
+		config = function()
+			require("nvim-treesitter.configs").setup({
+				ensure_installed = { "python", "cpp", "rust", "json", "bash", "lua" },
+				highlight = { enable = true },
+				indent = { enable = true },
+			})
+		end,
+	})
 
-    config = function()
-      require("nvim-treesitter.configs").setup({
-        ensure_installed = { "python", "cpp", "rust", "json", "bash", "lua" },
-        highlight = { enable = true },
-        indent = { enable = true },
-      })
-    end
-  }
+	-- nordfox colorscheme
+	use({
+		"EdenEast/nightfox.nvim",
 
+		config = function()
+			local nightfox = require("nightfox")
 
-  -- nordfox colorscheme
-  use {
-    'EdenEast/nightfox.nvim',
+			nightfox.setup({
+				fox = "nordfox", -- style
+				styles = {
+					keywords = "italic",
+				},
+			})
 
-    config = function()
-      local nightfox = require('nightfox')
+			nightfox.load()
+		end,
+	})
 
-      nightfox.setup({
-        fox = "nordfox", -- style
-        styles = {
-          keywords = "italic",
-        },
-      })
+	-- highlight word under curosr
+	use({
+		"RRethy/vim-illuminate",
 
-      nightfox.load()
-    end
-  }
+		config = function()
+			vim.g.Illuminate_delay = 500
+		end,
+	})
 
-  -- highlight word under curosr
-  use {
-    "RRethy/vim-illuminate",
+	-- colorize color codes
+	use({
+		"norcalli/nvim-colorizer.lua",
 
-    config = function()
-      vim.g.Illuminate_delay = 500
-    end,
-  }
+		config = function()
+			require("colorizer").setup()
+		end,
+	})
 
+	-- indentation lines
+	use({
+		"lukas-reineke/indent-blankline.nvim",
 
-  -- colorize color codes
-  use {
-    'norcalli/nvim-colorizer.lua',
+		config = function()
+			require("indent_blankline").setup({
+				char = "",
+				show_trailing_blankline_indent = false,
+				show_current_context = true,
+				show_current_context_start = true,
+			})
+		end,
+	})
 
-    config = function()
-      require('colorizer').setup()
-    end
-  }
+	-- git annotations
+	use({
+		"lewis6991/gitsigns.nvim",
 
+		requires = "nvim-lua/plenary.nvim",
 
-  -- indentation lines
-  use {
-    "lukas-reineke/indent-blankline.nvim",
+		config = function()
+			require("gitsigns").setup()
+		end,
+	})
 
-    config = function()
-      require("indent_blankline").setup({
-        char = "",
-        show_trailing_blankline_indent = false,
-        show_current_context = true,
-        show_current_context_start = true,
-      })
-    end
-  }
+	use({
+		"folke/todo-comments.nvim",
 
+		requires = "nvim-lua/plenary.nvim",
 
-  -- git annotations
-  use {
-    'lewis6991/gitsigns.nvim',
+		config = function()
+			require("todo-comments").setup({})
+		end,
+	})
 
-    requires = 'nvim-lua/plenary.nvim',
+	-- status line
+	use({
+		"nvim-lualine/lualine.nvim",
 
-    config = function()
-      require('gitsigns').setup()
-    end
-  }
+		requires = "kyazdani42/nvim-web-devicons",
 
-  use {
-    "folke/todo-comments.nvim",
+		config = function()
+			require("lualine").setup({
+				options = {
+					theme = "ayu_mirage",
+					component_separators = { left = "", right = "" },
+					section_separators = { left = "", right = "" },
+					disabled_filetypes = { "NvimTree" },
+				},
+				sections = {
+					lualine_a = { "mode" },
+					lualine_b = { "filename", "filetype" },
+					lualine_c = {},
+					lualine_x = {},
+					lualine_y = { "diff" },
+					lualine_z = { "encoding", "progress", "location" },
+				},
+			})
+		end,
+	})
 
-    requires = "nvim-lua/plenary.nvim",
+	-- file tree
+	use({
+		"kyazdani42/nvim-tree.lua",
 
-    config = function()
-      require("todo-comments").setup({})
-    end
-  }
+		requires = "kyazdani42/nvim-web-devicons",
 
-
-  -- status line
-  use {
-    'nvim-lualine/lualine.nvim',
-
-    requires = 'kyazdani42/nvim-web-devicons',
-
-    config = function()
-      require("lualine").setup({
-        options = {
-          theme = "ayu_mirage",
-          component_separators = { left = '', right = ''},
-          section_separators = { left = '', right = ''},
-          disabled_filetypes = {"NvimTree"},
-        },
-        sections = {
-          lualine_a = {"mode"},
-          lualine_b = {"filename", "filetype"},
-          lualine_c = {},
-          lualine_x = {},
-          lualine_y = {"diff"},
-          lualine_z = {"encoding", "progress", "location"},
-        },
-      })
-    end
-  }
-
-
-  -- file tree
-  use {
-    'kyazdani42/nvim-tree.lua',
-
-    requires = 'kyazdani42/nvim-web-devicons',
-
-    config = function()
-      -- nvim tree requires some config still through vim script:
-      vim.cmd [[
+		config = function()
+			-- nvim tree requires some config still through vim script:
+			vim.cmd([[
         let g:nvim_tree_indent_markers = 1 "0 by default, this option shows indent markers when folders are open
         let g:nvim_tree_git_hl = 1 "0 by default, will enable file highlight for git attributes (can be used without the icons).
         let g:nvim_tree_icons = { 'default': '' }
         " work-around to have NvimTree auto start
         autocmd VimEnter * NvimTreeOpen
         autocmd VimEnter * wincmd p
-      ]]
-      require('nvim-tree').setup({
-        -- doesn't do what we want
-        --open_on_setup = true,
-        auto_close = true,
-      })
-      local map_key = vim.api.nvim_set_keymap
-      map_key('n', '<Leader>g', ':NvimTreeFindFile<CR>', { noremap = true, silent = true })
-    end
-  }
+      ]])
+			require("nvim-tree").setup({
+				-- doesn't do what we want
+				--open_on_setup = true,
+				auto_close = true,
+			})
+			local map_key = vim.api.nvim_set_keymap
+			map_key("n", "<Leader>g", ":NvimTreeFindFile<CR>", { noremap = true, silent = true })
+		end,
+	})
 
+	-- original fzf
+	use({
+		"junegunn/fzf",
 
-  -- original fzf
-  use {
-    'junegunn/fzf',
+		requires = "junegunn/fzf.vim",
 
-    requires = 'junegunn/fzf.vim',
+		config = function()
+			local map_key = vim.api.nvim_set_keymap
+			--map_key('n', '<Leader>l', ":FzfBLines<CR>", { noremap = true, silent = true })
+			--map_key('n', '<Leader>f', ":FzfFiles<CR>", { noremap = true, silent = true })
+			map_key("n", "<Leader>r", ":FzfRg<CR>", { noremap = true, silent = true })
+			--map_key('n', '<Leader>h', ":FzfHelp<CR>", { noremap = true, silent = true })
 
-    config = function()
-      local map_key = vim.api.nvim_set_keymap
-      --map_key('n', '<Leader>l', ":FzfBLines<CR>", { noremap = true, silent = true })
-      --map_key('n', '<Leader>f', ":FzfFiles<CR>", { noremap = true, silent = true })
-      map_key('n', '<Leader>r', ":FzfRg<CR>", { noremap = true, silent = true })
-      --map_key('n', '<Leader>h', ":FzfHelp<CR>", { noremap = true, silent = true })
+			--let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.7 } }
+			--let g:fzf_command_prefix = 'Fzf'
+			vim.g.fzf_layout = { window = { width = 0.9, height = 0.7 } }
+			vim.g.fzf_command_prefix = "Fzf"
+		end,
+	})
 
-      --let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.7 } }
-      --let g:fzf_command_prefix = 'Fzf'
-      vim.g.fzf_layout = { window = { width = 0.9, height = 0.7 } }
-      vim.g.fzf_command_prefix = 'Fzf'
-    end
-  }
+	-- fzf commands in lua
+	-- I'd like to completely migrate to fzf-lua, however, there's still some issues
+	use({
+		"ibhagwan/fzf-lua",
 
+		requires = {
+			"vijaymarupudi/nvim-fzf",
+			"kyazdani42/nvim-web-devicons",
+		},
 
-  -- fzf commands in lua
-  -- I'd like to completely migrate to fzf-lua, however, there's still some issues
-  use {
-    'ibhagwan/fzf-lua',
+		config = function()
+			local map_key = vim.api.nvim_set_keymap
+			map_key("n", "<Leader>b", "<cmd>lua require('fzf-lua').builtin()<CR>", { noremap = true, silent = true })
+			map_key(
+				"n",
+				"<Leader>l",
+				"<cmd>lua require('fzf-lua').blines({ show_unlisted=true })<CR>",
+				{ noremap = true, silent = true }
+			)
+			map_key("n", "<Leader>f", "<cmd>lua require('fzf-lua').files()<CR>", { noremap = true, silent = true })
+			-- has performance issues, using the old fzf plugin for this for now...
+			--map_key('n', '<Leader>r', "<cmd>lua require('fzf-lua').grep_project()<CR>", { noremap = true, silent = true })
+			map_key("n", "<Leader>h", "<cmd>lua require('fzf-lua').help_tags()<CR>", { noremap = true, silent = true })
+		end,
+	})
 
-    requires = {
-      'vijaymarupudi/nvim-fzf',
-      'kyazdani42/nvim-web-devicons',
-    },
+	-- completion engine
+	use({
+		"hrsh7th/nvim-cmp",
 
-    config = function()
-      local map_key = vim.api.nvim_set_keymap
-      map_key('n', '<Leader>b', "<cmd>lua require('fzf-lua').builtin()<CR>", { noremap = true, silent = true })
-      map_key('n', '<Leader>l', "<cmd>lua require('fzf-lua').blines({ show_unlisted=true })<CR>", { noremap = true, silent = true })
-      map_key('n', '<Leader>f', "<cmd>lua require('fzf-lua').files()<CR>", { noremap = true, silent = true })
-      -- has performance issues, using the old fzf plugin for this for now...
-      --map_key('n', '<Leader>r', "<cmd>lua require('fzf-lua').grep_project()<CR>", { noremap = true, silent = true })
-      map_key('n', '<Leader>h', "<cmd>lua require('fzf-lua').help_tags()<CR>", { noremap = true, silent = true })
-    end
-  }
+		requires = {
+			{ "hrsh7th/cmp-buffer" },
+			{ "hrsh7th/cmp-path" },
+			{ "hrsh7th/cmp-nvim-lsp" },
+			{ "onsails/lspkind-nvim" },
 
-  -- completion engine
-  use {
-    'hrsh7th/nvim-cmp',
+			-- snippets
+			{
+				"saadparwaiz1/cmp_luasnip",
+				requires = {
+					{
+						"L3MON4D3/LuaSnip",
+						-- nice snippet collection
+						requires = "rafamadriz/friendly-snippets",
+						config = function()
+							-- setup friendly-snippets
+							require("luasnip.loaders.from_vscode").load({
+								paths = {
+									-- NOTE: isn't there a way to get the plugin path from packer?
+									"~/.local/share/nvim/site/pack/packer/start/friendly-snippets/",
+								},
+							})
+						end,
+					},
+				},
+			},
+		},
 
-    requires = {
-      { "hrsh7th/cmp-buffer" },
-      { "hrsh7th/cmp-path" },
-      { "hrsh7th/cmp-nvim-lsp" },
-      { "onsails/lspkind-nvim" },
+		config = function()
+			local cmp = require("cmp")
 
-      -- snippets
-      {
-        "saadparwaiz1/cmp_luasnip",
-        requires = {
-          {
-            "L3MON4D3/LuaSnip",
-            -- nice snippet collection
-            requires = "rafamadriz/friendly-snippets",
-            config = function()
-              -- setup friendly-snippets
-              require("luasnip.loaders.from_vscode").load({ paths = {
-                -- NOTE: isn't there a way to get the plugin path from packer?
-                "~/.local/share/nvim/site/pack/packer/start/friendly-snippets/"
-              }})
-            end
-          },
-        },
-      },
-    },
+			local has_words_before = function()
+				local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+				return col ~= 0
+					and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+			end
+			local luasnip = require("luasnip")
 
-    config = function()
-      local cmp = require("cmp")
+			cmp.setup({
 
-      local has_words_before = function()
-        local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-        return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-      end
-      local luasnip = require("luasnip")
+				snippet = {
+					-- I don't want snippets, but nvim-cmp requires its...
+					expand = function(args)
+						require("luasnip").lsp_expand(args.body)
+					end,
+				},
 
-      cmp.setup({
+				sources = cmp.config.sources({
+					{ name = "nvim_lsp" },
+					{ name = "buffer" },
+					{ name = "path" },
+					{ name = "luasnip" },
+				}),
 
-        snippet = {
-          -- I don't want snippets, but nvim-cmp requires its...
-          expand = function(args)
-            require('luasnip').lsp_expand(args.body)
-          end
-        },
+				mapping = {
 
-        sources = cmp.config.sources({
-          { name = "nvim_lsp" },
-          { name = "buffer" },
-          { name = "path" },
-          { name = "luasnip" },
-        }),
+					["<Tab>"] = cmp.mapping(function(fallback)
+						if cmp.visible() then
+							cmp.select_next_item()
+						elseif luasnip.expand_or_jumpable() then
+							luasnip.expand_or_jump()
+						elseif has_words_before() then
+							cmp.complete()
+						else
+							fallback()
+						end
+					end, { "i", "s" }),
 
-        mapping = {
+					["<S-Tab>"] = cmp.mapping(function(fallback)
+						if cmp.visible() then
+							cmp.select_prev_item()
+						elseif luasnip.jumpable(-1) then
+							luasnip.jump(-1)
+						else
+							fallback()
+						end
+					end, { "i", "s" }),
 
-          ["<Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_next_item()
-            elseif luasnip.expand_or_jumpable() then
-              luasnip.expand_or_jump()
-            elseif has_words_before() then
-              cmp.complete()
-            else
-              fallback()
-            end
-          end, { "i", "s" }),
+					["<CR>"] = cmp.mapping.confirm({ select = true }),
+				},
+				formatting = {
+					format = require("lspkind").cmp_format({ maxwidth = 50 }),
+				},
+			})
+		end,
+	})
 
-          ["<S-Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_prev_item()
-            elseif luasnip.jumpable(-1) then
-              luasnip.jump(-1)
-            else
-              fallback()
-            end
-          end, { "i", "s" }),
+	-- LSP configurations
+	use({
+		"neovim/nvim-lspconfig",
 
-          ['<CR>'] = cmp.mapping.confirm({ select = true }),
-        },
-        formatting = {
-          format = require('lspkind').cmp_format({ maxwidth = 50 })
-        }
-      })
-    end
-  }
-
-  -- LSP configurations
-  use {
-    "neovim/nvim-lspconfig",
-
-    requires = {
-      { "ray-x/lsp_signature.nvim" },
-      { "simrat39/symbols-outline.nvim" },
-      {
-        'kosayoda/nvim-lightbulb',
-        config = function()
-          vim.cmd [[
+		requires = {
+			{ "ray-x/lsp_signature.nvim" },
+			{ "simrat39/symbols-outline.nvim" },
+			{
+				"kosayoda/nvim-lightbulb",
+				config = function()
+					vim.cmd([[
             autocmd CursorHold,CursorHoldI * lua require('nvim-lightbulb').update_lightbulb()
-          ]]
-        end
-      },
-      {
-        'weilbith/nvim-code-action-menu',
-        cmd = 'CodeActionMenu',
-      },
-      {
-        "jose-elias-alvarez/null-ls.nvim",
-        requires = "nvim-lua/plenary.nvim",
-      },
-    },
+          ]])
+				end,
+			},
+			{
+				"weilbith/nvim-code-action-menu",
+				cmd = "CodeActionMenu",
+			},
+			{
+				"jose-elias-alvarez/null-ls.nvim",
+				requires = "nvim-lua/plenary.nvim",
+			},
+		},
 
-    -- is this really needed?
-    after = "nvim-cmp",
+		-- is this really needed?
+		after = "nvim-cmp",
 
-    config = function()
-      local lspconfig = require("lspconfig")
+		config = function()
+			local lspconfig = require("lspconfig")
 
-      local lsp_signature = require("lsp_signature")
-      local illuminate = require("illuminate")
+			local lsp_signature = require("lsp_signature")
+			local illuminate = require("illuminate")
 
-      local on_attach = function(client)
-        lsp_signature.on_attach()
-        illuminate.on_attach(client)
-      end
+			local on_attach = function(client)
+				lsp_signature.on_attach()
+				illuminate.on_attach(client)
+			end
 
-      local capabilities = require('cmp_nvim_lsp').update_capabilities(
-        vim.lsp.protocol.make_client_capabilities()
-      )
+			local capabilities = require("cmp_nvim_lsp").update_capabilities(
+				vim.lsp.protocol.make_client_capabilities()
+			)
 
-      local servers = {
-        pyright = {
-          on_attach = on_attach,
-          capabilities = capabilities,
-        },
-        clangd = {
-          on_attach = on_attach,
-          capabilities = capabilities,
-        },
-        sumneko_lua = {
-          cmd = { "lua-language-server" },
-          settings = {
-            Lua = {
-              runtime = {
-                version = 'LuaJIT',
-                path = vim.split(package.path, ';'),
-              },
-              diagnostics = {
-                -- Get the language server to recognize the `vim` global
-                globals = {'vim'},
-              },
-              workspace = {
-                -- Make the server aware of Neovim runtime files
-                library = vim.api.nvim_get_runtime_file("", true),
-              },
-            },
-          },
-          on_attach = on_attach,
-          capabilities = capabilities,
-        },
-        rust_analyzer = {
-          on_attach = on_attach,
-          capabilities = capabilities,
-        },
-      }
+			local servers = {
+				pyright = {
+					on_attach = on_attach,
+					capabilities = capabilities,
+				},
+				clangd = {
+					on_attach = on_attach,
+					capabilities = capabilities,
+				},
+				sumneko_lua = {
+					cmd = { "lua-language-server" },
+					settings = {
+						Lua = {
+							runtime = {
+								version = "LuaJIT",
+								path = vim.split(package.path, ";"),
+							},
+							diagnostics = {
+								-- Get the language server to recognize the `vim` global
+								globals = { "vim" },
+							},
+							workspace = {
+								-- Make the server aware of Neovim runtime files
+								library = vim.api.nvim_get_runtime_file("", true),
+							},
+						},
+					},
+					on_attach = on_attach,
+					capabilities = capabilities,
+				},
+				rust_analyzer = {
+					on_attach = on_attach,
+					capabilities = capabilities,
+				},
+			}
 
-      for server_name, server_config in pairs(servers) do
-        lspconfig[server_name].setup(server_config)
-      end
+			for server_name, server_config in pairs(servers) do
+				lspconfig[server_name].setup(server_config)
+			end
 
-      -- null-ls isn't supported by lspconfig
-      local null_ls = require("null-ls")
-      null_ls.setup({
-        sources = {
-          null_ls.builtins.formatting.black,
-          null_ls.builtins.formatting.stylua,
-        },
-        on_attach = on_attach,
-        capabilities = capabilities,
-      })
-
-    end,
-  }
-
+			-- null-ls isn't supported by lspconfig
+			local null_ls = require("null-ls")
+			null_ls.setup({
+				sources = {
+					null_ls.builtins.formatting.black,
+					null_ls.builtins.formatting.stylua,
+				},
+				on_attach = on_attach,
+				capabilities = capabilities,
+			})
+		end,
+	})
 end)
