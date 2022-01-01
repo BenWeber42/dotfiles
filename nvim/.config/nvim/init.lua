@@ -15,9 +15,9 @@ opt.number = true
 opt.relativenumber = true
 -- remove the weird `~` at the end of buffers
 opt.fillchars:append({ eob = " " })
--- show trailing spaces
+-- show tabs and trailing spaces
 opt.list = true
-opt.listchars = { trail = "·" }
+opt.listchars = { trail = "·", tab = "  ›" }
 -- tab settings
 opt.shiftwidth = 2
 opt.tabstop = 2
