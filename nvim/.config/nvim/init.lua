@@ -452,6 +452,9 @@ require("packer").startup(function(use)
 				on_attach = on_attach,
 				capabilities = capabilities,
 			})
+
+			-- for python we use the black formater by default
+			vim.cmd("autocmd BufWritePre *.py lua vim.lsp.buf.formatting_sync()")
 		end,
 	})
 
