@@ -371,7 +371,19 @@ require("packer").startup(function(use)
 
 		requires = {
 			{ "ray-x/lsp_signature.nvim" },
-			{ "simrat39/symbols-outline.nvim" },
+			{
+				"simrat39/symbols-outline.nvim",
+
+				config = function()
+					vim.g.symbols_outline = {
+						relative_width = false,
+						width = 30,
+						symbol_blacklist = {
+							"Variable",
+						},
+					}
+				end,
+			},
 			{
 				"kosayoda/nvim-lightbulb",
 				config = function()
