@@ -103,11 +103,11 @@ require("packer").startup(function(use)
 	use({
 		"EdenEast/nightfox.nvim",
 
-    run = function()
+		run = function()
 			local nightfox = require("nightfox")
 			nightfox.init({ styles = { keywords = "italic" } })
-      nightfox.compile()
-    end,
+			nightfox.compile()
+		end,
 
 		config = function()
 			vim.cmd("colorscheme nordfox")
