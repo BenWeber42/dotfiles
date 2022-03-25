@@ -476,4 +476,53 @@ require("packer").startup(function(use)
 		end,
 	})
 
+	-- integrated debugging
+	use({
+		-- FIXME: pretty messy in its current state
+		"mfussenegger/nvim-dap",
+
+		-- UI for debugging
+		requires = {
+			{
+				"rcarriga/nvim-dap-ui",
+
+				config = function()
+					require("dapui").setup()
+				end,
+			},
+			-- python configs
+			{
+				"mfussenegger/nvim-dap-python",
+
+				config = function()
+					local dap_python = require("dap-python")
+					dap_python.setup(
+						-- NOTE: isn't there a way to get the plugin path from packer?
+						"~/.local/share/nvim/site/pack/packer/start/nvim-dap-python/debugpy-venv/bin/python"
+					)
+					dap_python.test_runner = "pytest"
+				end,
+
+				run = [[
+					rm -rf debugpy-venv
+					python -m venv debugpy-venv
+					./debugpy-venv/bin/python -m pip install debugpy
+				]],
+			},
+		},
+
+		config = function()
+			local dap = require("dap")
+			local dapui = require("dapui")
+			dap.listeners.after.event_initialized["dapui_config"] = function()
+				dapui.open()
+			end
+			dap.listeners.before.event_terminated["dapui_config"] = function()
+				dapui.close()
+			end
+			dap.listeners.before.event_exited["dapui_config"] = function()
+				dapui.close()
+			end
+		end,
+	})
 end)
