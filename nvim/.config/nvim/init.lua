@@ -157,13 +157,22 @@ require("packer").startup(function(use)
 		end,
 	})
 
+	-- git utilities
+	use({ "tpope/vim-fugitive" })
+
+	-- highlight TODO comments
 	use({
 		"folke/todo-comments.nvim",
 
 		requires = "nvim-lua/plenary.nvim",
 
 		config = function()
-			require("todo-comments").setup({})
+			require("todo-comments").setup({
+				highlight = {
+					pattern = [[<(KEYWORDS)>]],
+					keyword = "bg",
+				},
+			})
 		end,
 	})
 
@@ -455,5 +464,4 @@ require("packer").startup(function(use)
 		end,
 	})
 
-	use({ "tpope/vim-fugitive" })
 end)
