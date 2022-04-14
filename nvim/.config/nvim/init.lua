@@ -76,6 +76,7 @@ require("packer").startup(function(use)
 	-- Packer can manage itself
 	use("wbthomason/packer.nvim")
 
+  -- stabilizes windows/cursors when new windows are opened
 	use({
 		"luukvbaal/stabilize.nvim",
 
