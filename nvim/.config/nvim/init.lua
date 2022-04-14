@@ -76,6 +76,18 @@ require("packer").startup(function(use)
 	-- Packer can manage itself
 	use("wbthomason/packer.nvim")
 
+  --
+  use({
+    "ojroques/vim-oscyank",
+
+    config = function()
+      vim.cmd([[
+        vnoremap <leader>y :'<,'>OSCYank<CR>
+        let g:oscyank_term = 'kitty'
+      ]])
+    end,
+  })
+
   -- stabilizes windows/cursors when new windows are opened
 	use({
 		"luukvbaal/stabilize.nvim",
