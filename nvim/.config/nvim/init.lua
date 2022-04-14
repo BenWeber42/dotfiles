@@ -221,7 +221,6 @@ require("packer").startup(function(use)
 			require("nvim-tree").setup({
 				-- doesn't do what we want
 				--open_on_setup = true,
-				auto_close = true,
 			})
 			local map_key = vim.api.nvim_set_keymap
 			map_key("n", "<Leader>g", ":NvimTreeFindFile<CR>", { noremap = true, silent = true })
