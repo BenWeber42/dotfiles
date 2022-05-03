@@ -41,6 +41,9 @@ opt.wildmode = { "longest", "list" }
 opt.clipboard:append("unnamedplus")
 opt.updatetime = 500
 
+-- my preferred diff options
+opt.diffopt = { "internal", "closeoff" }
+
 -- proper sign symbols:
 vim.fn.sign_define(
 	"DiagnosticSignError",
