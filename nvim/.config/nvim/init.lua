@@ -79,18 +79,18 @@ require("packer").startup(function(use)
 	-- Packer can manage itself
 	use("wbthomason/packer.nvim")
 
-  -- copy over ssh with ansi control code
-  use({
-    "ojroques/vim-oscyank",
+	-- copy over ssh with ansi control code
+	use({
+		"ojroques/vim-oscyank",
 
-    config = function()
-      local map_key = vim.keymap.set
+		config = function()
+			local map_key = vim.keymap.set
 			map_key("v", "<Leader>y", ":'<,'>OSCYank<CR>", { noremap = true, silent = true })
-      vim.g.oscyank_term = 'kitty'
-    end,
-  })
+			vim.g.oscyank_term = "kitty"
+		end,
+	})
 
-  -- stabilizes windows/cursors when new windows are opened
+	-- stabilizes windows/cursors when new windows are opened
 	use({
 		"luukvbaal/stabilize.nvim",
 
@@ -224,28 +224,27 @@ require("packer").startup(function(use)
 		requires = "kyazdani42/nvim-web-devicons",
 
 		config = function()
-
-      -- work-around to have NvimTree auto start
-      vim.api.nvim_create_autocmd("VimEnter", {
-        pattern = "*",
-        -- # NOTE: `require("nvim-tree").open` doesn't seem to work
-        command = "NvimTreeOpen"
-      })
-      vim.api.nvim_create_autocmd("VimEnter", {
-        pattern = "*",
-        command = "wincmd p"
-      })
+			-- work-around to have NvimTree auto start
+			vim.api.nvim_create_autocmd("VimEnter", {
+				pattern = "*",
+				-- # NOTE: `require("nvim-tree").open` doesn't seem to work
+				command = "NvimTreeOpen",
+			})
+			vim.api.nvim_create_autocmd("VimEnter", {
+				pattern = "*",
+				command = "wincmd p",
+			})
 
 			-- nvim tree requires this config before calling `setup`
-      vim.g.nvim_tree_git_hl = 1
+			vim.g.nvim_tree_git_hl = 1
 
 			require("nvim-tree").setup({
-        renderer = { indent_markers = { enable = true } }
+				renderer = { indent_markers = { enable = true } },
 				-- doesn't do what we want
 				--open_on_setup = true,
 			})
 
-      local map_key = vim.keymap.set
+			local map_key = vim.keymap.set
 			map_key("n", "<Leader>g", require("nvim-tree").find_file, { noremap = true, silent = true })
 		end,
 	})
@@ -257,9 +256,9 @@ require("packer").startup(function(use)
 		requires = "junegunn/fzf.vim",
 
 		config = function()
-      local map_key = vim.keymap.set
+			local map_key = vim.keymap.set
 			--map_key('n', '<Leader>l', ":FzfBLines<CR>", { noremap = true, silent = true })
-			map_key('n', '<Leader>f', ":FzfFiles<CR>", { noremap = true, silent = true })
+			map_key("n", "<Leader>f", ":FzfFiles<CR>", { noremap = true, silent = true })
 			map_key("n", "<Leader>r", ":FzfRg<CR>", { noremap = true, silent = true })
 			--map_key('n', '<Leader>h', ":FzfHelp<CR>", { noremap = true, silent = true })
 
@@ -281,20 +280,19 @@ require("packer").startup(function(use)
 		},
 
 		config = function()
+			require("fzf-lua").setup({
+				files = { multiprocess = false },
+				blines = { show_unlisted = true },
+			})
 
-      require("fzf-lua").setup({
-        files = { multiprocess = false },
-        blines = { show_unlisted = true },
-      })
-
-      local map_key = vim.keymap.set
-			map_key("n", "<Leader>b", require('fzf-lua').builtin, { noremap = true, silent = true })
-			map_key("n", "<Leader>l", require('fzf-lua').blines, { noremap = true, silent = true })
+			local map_key = vim.keymap.set
+			map_key("n", "<Leader>b", require("fzf-lua").builtin, { noremap = true, silent = true })
+			map_key("n", "<Leader>l", require("fzf-lua").blines, { noremap = true, silent = true })
 			-- has performance issues, using the old fzf plugin for this for now...
 			-- map_key("n", "<Leader>f", require('fzf-lua').files, { noremap = true, silent = true })
 			-- has performance issues, using the old fzf plugin for this for now...
 			--map_key('n', '<Leader>r', require('fzf-lua').grep_project, { noremap = true, silent = true })
-			map_key("n", "<Leader>h", require('fzf-lua').help_tags, { noremap = true, silent = true })
+			map_key("n", "<Leader>h", require("fzf-lua").help_tags, { noremap = true, silent = true })
 		end,
 	})
 
@@ -411,10 +409,10 @@ require("packer").startup(function(use)
 			{
 				"kosayoda/nvim-lightbulb",
 				config = function()
-          vim.api.nvim_create_autocmd({"CursorHold", "CursorHoldI"}, {
-            pattern = "*",
-            callback = require('nvim-lightbulb').update_lightbulb,
-          })
+					vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+						pattern = "*",
+						callback = require("nvim-lightbulb").update_lightbulb,
+					})
 				end,
 			},
 			{
@@ -497,11 +495,11 @@ require("packer").startup(function(use)
 			})
 
 			-- for python we use the black formater by default
-      vim.api.nvim_create_user_command(
-        'LspFormat',
-        vim.lsp.buf.formatting_sync,
-        { desc = 'Format buffer using LSP servers.' }
-      )
+			vim.api.nvim_create_user_command(
+				"LspFormat",
+				vim.lsp.buf.formatting_sync,
+				{ desc = "Format buffer using LSP servers." }
+			)
 		end,
 	})
 
