@@ -224,21 +224,29 @@ require("packer").startup(function(use)
 		requires = "kyazdani42/nvim-web-devicons",
 
 		config = function()
-			-- nvim tree requires some config still through vim script:
-			vim.cmd([[
-        let g:nvim_tree_indent_markers = 1 "0 by default, this option shows indent markers when folders are open
-        let g:nvim_tree_git_hl = 1 "0 by default, will enable file highlight for git attributes (can be used without the icons).
-        let g:nvim_tree_icons = { 'default': '' }
-        " work-around to have NvimTree auto start
-        autocmd VimEnter * NvimTreeOpen
-        autocmd VimEnter * wincmd p
-      ]])
+
+      -- work-around to have NvimTree auto start
+      vim.api.nvim_create_autocmd("VimEnter", {
+        pattern = "*",
+        -- # NOTE: `require("nvim-tree").open` doesn't seem to work
+        command = "NvimTreeOpen"
+      })
+      vim.api.nvim_create_autocmd("VimEnter", {
+        pattern = "*",
+        command = "wincmd p"
+      })
+
+			-- nvim tree requires this config before calling `setup`
+      vim.g.nvim_tree_git_hl = 1
+
 			require("nvim-tree").setup({
+        renderer = { indent_markers = { enable = true } }
 				-- doesn't do what we want
 				--open_on_setup = true,
 			})
-			local map_key = vim.api.nvim_set_keymap
-			map_key("n", "<Leader>g", ":NvimTreeFindFile<CR>", { noremap = true, silent = true })
+
+      local map_key = vim.keymap.set
+			map_key("n", "<Leader>g", require("nvim-tree").find_file, { noremap = true, silent = true })
 		end,
 	})
 
