@@ -281,18 +281,20 @@ require("packer").startup(function(use)
 		},
 
 		config = function()
-			local map_key = vim.api.nvim_set_keymap
-			map_key("n", "<Leader>b", "<cmd>lua require('fzf-lua').builtin()<CR>", { noremap = true, silent = true })
-			map_key(
-				"n",
-				"<Leader>l",
-				"<cmd>lua require('fzf-lua').blines({ show_unlisted=true })<CR>",
-				{ noremap = true, silent = true }
-			)
-			map_key("n", "<Leader>f", "<cmd>lua require('fzf-lua').files()<CR>", { noremap = true, silent = true })
+
+      require("fzf-lua").setup({
+        files = { multiprocess = false },
+        blines = { show_unlisted = true },
+      })
+
+      local map_key = vim.keymap.set
+			map_key("n", "<Leader>b", require('fzf-lua').builtin, { noremap = true, silent = true })
+			map_key("n", "<Leader>l", require('fzf-lua').blines, { noremap = true, silent = true })
 			-- has performance issues, using the old fzf plugin for this for now...
-			--map_key('n', '<Leader>r', "<cmd>lua require('fzf-lua').grep_project()<CR>", { noremap = true, silent = true })
-			map_key("n", "<Leader>h", "<cmd>lua require('fzf-lua').help_tags()<CR>", { noremap = true, silent = true })
+			-- map_key("n", "<Leader>f", require('fzf-lua').files, { noremap = true, silent = true })
+			-- has performance issues, using the old fzf plugin for this for now...
+			--map_key('n', '<Leader>r', require('fzf-lua').grep_project, { noremap = true, silent = true })
+			map_key("n", "<Leader>h", require('fzf-lua').help_tags, { noremap = true, silent = true })
 		end,
 	})
 
