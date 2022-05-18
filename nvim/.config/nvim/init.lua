@@ -56,7 +56,7 @@ vim.fn.sign_define("DiagnosticSignInfo", { texthl = "DiagnosticSignInfo", text =
 -------------------------------------------------------------------------------
 -- Vim Key bindings
 -------------------------------------------------------------------------------
-local map_key = vim.api.nvim_set_keymap
+local map_key = vim.keymap.set
 vim.g.mapleader = " "
 
 -- easy window navigation
@@ -84,10 +84,8 @@ require("packer").startup(function(use)
     "ojroques/vim-oscyank",
 
     config = function()
-      vim.cmd([[
-        vnoremap <leader>y :'<,'>OSCYank<CR>
-        let g:oscyank_term = 'kitty'
-      ]])
+      local map_key = vim.keymap.set
+			map_key("v", "<Leader>y", ":'<,'>OSCYank<CR>", { noremap = true, silent = true })
     end,
   })
 
@@ -250,9 +248,9 @@ require("packer").startup(function(use)
 		requires = "junegunn/fzf.vim",
 
 		config = function()
-			local map_key = vim.api.nvim_set_keymap
+      local map_key = vim.keymap.set
 			--map_key('n', '<Leader>l', ":FzfBLines<CR>", { noremap = true, silent = true })
-			--map_key('n', '<Leader>f', ":FzfFiles<CR>", { noremap = true, silent = true })
+			map_key('n', '<Leader>f', ":FzfFiles<CR>", { noremap = true, silent = true })
 			map_key("n", "<Leader>r", ":FzfRg<CR>", { noremap = true, silent = true })
 			--map_key('n', '<Leader>h', ":FzfHelp<CR>", { noremap = true, silent = true })
 
@@ -402,9 +400,10 @@ require("packer").startup(function(use)
 			{
 				"kosayoda/nvim-lightbulb",
 				config = function()
-					vim.cmd([[
-            autocmd CursorHold,CursorHoldI * lua require('nvim-lightbulb').update_lightbulb()
-          ]])
+          vim.api.nvim_create_autocmd({"CursorHold", "CursorHoldI"}, {
+            pattern = "*",
+            callback = require('nvim-lightbulb').update_lightbulb,
+          })
 				end,
 			},
 			{
