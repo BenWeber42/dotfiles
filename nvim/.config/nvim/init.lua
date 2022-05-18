@@ -497,7 +497,11 @@ require("packer").startup(function(use)
 			})
 
 			-- for python we use the black formater by default
-			vim.cmd("autocmd BufWritePre *.py lua vim.lsp.buf.formatting_sync()")
+      vim.api.nvim_create_user_command(
+        'LspFormat',
+        vim.lsp.buf.formatting_sync,
+        { desc = 'Format buffer using LSP servers.' }
+      )
 		end,
 	})
 
