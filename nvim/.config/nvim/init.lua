@@ -79,13 +79,14 @@ require("packer").startup(function(use)
 	-- Packer can manage itself
 	use("wbthomason/packer.nvim")
 
-  --
+  -- copy over ssh with ansi control code
   use({
     "ojroques/vim-oscyank",
 
     config = function()
       local map_key = vim.keymap.set
 			map_key("v", "<Leader>y", ":'<,'>OSCYank<CR>", { noremap = true, silent = true })
+      vim.g.oscyank_term = 'kitty'
     end,
   })
 
