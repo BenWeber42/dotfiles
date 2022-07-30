@@ -477,6 +477,14 @@ require("packer").startup(function(use)
 					on_attach = on_attach,
 					capabilities = capabilities,
 				},
+				ltex = {
+					on_attach = on_attach,
+					capabilities = capabilities,
+				},
+				texlab = {
+					on_attach = on_attach,
+					capabilities = capabilities,
+				},
 			}
 
 			for server_name, server_config in pairs(servers) do
