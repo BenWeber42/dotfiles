@@ -244,11 +244,8 @@ require("packer").startup(function(use)
 				command = "wincmd p",
 			})
 
-			-- nvim tree requires this config before calling `setup`
-			vim.g.nvim_tree_git_hl = 1
-
 			require("nvim-tree").setup({
-				renderer = { indent_markers = { enable = true } },
+				renderer = { indent_markers = { enable = true }, highlight_git = true },
 				-- doesn't do what we want
 				--open_on_setup = true,
 			})
