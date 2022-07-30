@@ -99,6 +99,10 @@ require("packer").startup(function(use)
 		end,
 	})
 
+	-- automatic basic language support for many languages
+	-- (provides more robust indentation than tree-sitter)
+	use("sheerun/vim-polyglot")
+
 	-- proper grammar parsing
 	use({
 		"nvim-treesitter/nvim-treesitter",
@@ -108,7 +112,12 @@ require("packer").startup(function(use)
 		config = function()
 			require("nvim-treesitter.configs").setup({
 				ensure_installed = { "python", "cpp", "rust", "json", "bash", "lua" },
-				highlight = { enable = true },
+				highlight = {
+					enable = true,
+					-- enables traditional regex syntax highlighting needed by vim-polyglot indentation
+					additional_vim_regex_highlighting = true,
+				},
+				-- vim-polyglot indentation is much more robust than tree-sitter currently
 				indent = { enable = false },
 			})
 		end,
