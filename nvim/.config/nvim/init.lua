@@ -14,7 +14,7 @@ opt.colorcolumn = "80"
 opt.number = true
 opt.relativenumber = true
 -- always show some lines above/below for context
-opt.scrolloff = 10
+opt.scrolloff = 5
 -- remove the weird `~` at the end of buffers
 opt.fillchars:append({ eob = " " })
 -- show tabs and trailing spaces
