@@ -448,19 +448,17 @@ require("packer").startup(function(use)
 				illuminate.on_attach(client)
 			end
 
-			local capabilities = require("cmp_nvim_lsp").update_capabilities(
-				vim.lsp.protocol.make_client_capabilities()
-			)
+			local capabilities =
+				require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
 
-			local servers = {
-				pyright = {
-					on_attach = on_attach,
-					capabilities = capabilities,
-				},
-				clangd = {
-					on_attach = on_attach,
-					capabilities = capabilities,
-				},
+			local default_lsp_settings = {
+				on_attach = on_attach,
+				capabilities = capabilities,
+			}
+
+			local lsp_settings = {
+				pyright = {},
+				clangd = {},
 				sumneko_lua = {
 					cmd = { "lua-language-server" },
 					settings = {
@@ -479,39 +477,25 @@ require("packer").startup(function(use)
 							},
 						},
 					},
-					on_attach = on_attach,
-					capabilities = capabilities,
 				},
-				rust_analyzer = {
-					on_attach = on_attach,
-					capabilities = capabilities,
-				},
-				ltex = {
-					on_attach = on_attach,
-					capabilities = capabilities,
-				},
-				texlab = {
-					on_attach = on_attach,
-					capabilities = capabilities,
-				},
+				rust_analyzer = {},
+				ltex = {},
+				texlab = {},
 			}
 
-			for server_name, server_config in pairs(servers) do
-				lspconfig[server_name].setup(server_config)
+			for server_name, server_config in pairs(lsp_settings) do
+				lspconfig[server_name].setup(vim.tbl_extend("keep", server_config, default_lsp_settings))
 			end
 
 			-- null-ls isn't supported by lspconfig
 			local null_ls = require("null-ls")
-			null_ls.setup({
+			null_ls.setup(vim.tbl_extend("keep", {
 				sources = {
 					null_ls.builtins.formatting.black,
 					null_ls.builtins.formatting.stylua,
 				},
-				on_attach = on_attach,
-				capabilities = capabilities,
-			})
+			}, default_lsp_settings))
 
-			-- for python we use the black formater by default
 			vim.api.nvim_create_user_command(
 				"LspFormat",
 				vim.lsp.buf.formatting_sync,
