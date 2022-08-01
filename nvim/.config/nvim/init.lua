@@ -81,12 +81,11 @@ require("packer").startup(function(use)
 
 	-- copy over ssh with ansi control code
 	use({
-		"ojroques/vim-oscyank",
+		"ojroques/nvim-osc52",
 
 		config = function()
 			local map_key = vim.keymap.set
-			map_key("v", "<Leader>y", ":'<,'>OSCYank<CR>", { noremap = true, silent = true })
-			vim.g.oscyank_term = "kitty"
+			map_key("v", "<Leader>y", require("osc52").copy_visual, { noremap = true, silent = true })
 		end,
 	})
 
