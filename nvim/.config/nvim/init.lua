@@ -428,6 +428,19 @@ require("packer").startup(function(use)
 				"jose-elias-alvarez/null-ls.nvim",
 				requires = "nvim-lua/plenary.nvim",
 			},
+			{
+				-- display diagnostics
+				"folke/trouble.nvim",
+				requires = "kyazdani42/nvim-web-devicons",
+				config = function()
+					require("trouble").setup({
+						-- use "document_diagnostics" by default
+						mode = "document_diagnostics",
+						-- use my own defined signs
+						use_diagnostic_signs = true,
+					})
+				end,
+			},
 		},
 
 		-- is this really needed?
