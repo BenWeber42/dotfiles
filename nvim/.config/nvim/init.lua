@@ -551,3 +551,5 @@ require("packer").startup(function(use)
 		end,
 	})
 end)
+
+-- vim: noexpandtab tabstop=2 shiftwidth=2
