@@ -536,21 +536,23 @@ require("packer").startup(function(use)
 
 				config = function()
 					require("dapui").setup({
-						sidebar = {
-							size = 60,
-							position = "left",
-							elements = {
-								{ id = "scopes", size = 0.7 },
-								{ id = "stacks", size = 0.3 },
-								{ id = "watches", size = 0.0 },
+						layouts = {
+							{
+								size = 60,
+								position = "left",
+								elements = {
+									{ id = "scopes", size = 0.7 },
+									{ id = "stacks", size = 0.3 },
+									{ id = "watches", size = 0.0 },
+								},
 							},
-						},
-						tray = {
-							size = 60,
-							position = "right",
-							elements = {
-								{ id = "repl", size = 0.7 },
-								{ id = "breakpoints", size = 0.3 },
+							{
+								size = 60,
+								position = "right",
+								elements = {
+									{ id = "repl", size = 0.7 },
+									{ id = "breakpoints", size = 0.3 },
+								},
 							},
 						},
 					})
