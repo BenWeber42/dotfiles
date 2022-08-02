@@ -343,6 +343,28 @@ require("packer").startup(function(use)
 			end
 			local luasnip = require("luasnip")
 
+			local next_fun = function(fallback)
+				if cmp.visible() then
+					cmp.select_next_item()
+				elseif luasnip.expand_or_jumpable() then
+					luasnip.expand_or_jump()
+				elseif has_words_before() then
+					cmp.complete()
+				else
+					fallback()
+				end
+			end
+
+			local prev_fun = function(fallback)
+				if cmp.visible() then
+					cmp.select_prev_item()
+				elseif luasnip.jumpable(-1) then
+					luasnip.jump(-1)
+				else
+					fallback()
+				end
+			end
+
 			cmp.setup({
 
 				snippet = {
@@ -361,27 +383,11 @@ require("packer").startup(function(use)
 
 				mapping = {
 
-					["<Tab>"] = cmp.mapping(function(fallback)
-						if cmp.visible() then
-							cmp.select_next_item()
-						elseif luasnip.expand_or_jumpable() then
-							luasnip.expand_or_jump()
-						elseif has_words_before() then
-							cmp.complete()
-						else
-							fallback()
-						end
-					end, { "i", "s" }),
+					["<Tab>"] = cmp.mapping(next_fun, { "i", "s" }),
+					["<C-j>"] = cmp.mapping(next_fun, { "i", "s" }),
 
-					["<S-Tab>"] = cmp.mapping(function(fallback)
-						if cmp.visible() then
-							cmp.select_prev_item()
-						elseif luasnip.jumpable(-1) then
-							luasnip.jump(-1)
-						else
-							fallback()
-						end
-					end, { "i", "s" }),
+					["<S-Tab>"] = cmp.mapping(prev_fun, { "i", "s" }),
+					["<C-k>"] = cmp.mapping(prev_fun, { "i", "s" }),
 
 					["<CR>"] = cmp.mapping.confirm({ select = true }),
 				},
