@@ -530,7 +530,25 @@ require("packer").startup(function(use)
 				"rcarriga/nvim-dap-ui",
 
 				config = function()
-					require("dapui").setup()
+					require("dapui").setup({
+						sidebar = {
+							size = 60,
+							position = "left",
+							elements = {
+								{ id = "scopes", size = 0.7 },
+								{ id = "stacks", size = 0.3 },
+								{ id = "watches", size = 0.0 },
+							},
+						},
+						tray = {
+							size = 60,
+							position = "right",
+							elements = {
+								{ id = "repl", size = 0.7 },
+								{ id = "breakpoints", size = 0.3 },
+							},
+						},
+					})
 				end,
 			},
 			-- python configs
@@ -539,11 +557,29 @@ require("packer").startup(function(use)
 
 				config = function()
 					local dap_python = require("dap-python")
+
 					dap_python.setup(
 						-- NOTE: isn't there a way to get the plugin path from packer?
+						-- maybe use mason for debugpy instead?
 						"~/.local/share/nvim/site/pack/packer/start/nvim-dap-python/debugpy-venv/bin/python"
 					)
+
 					dap_python.test_runner = "pytest"
+
+					vim.api.nvim_create_user_command("DapPythonTestMethod", function()
+						vim.cmd("tabnew +" .. vim.fn.line(".") .. " %")
+						dap_python.test_method()
+					end, { desc = "Debug method of python test." })
+					vim.api.nvim_create_user_command(
+						"DapPythonTestClass",
+						dap_python.test_class,
+						{ desc = "Debug class of python test." }
+					)
+					vim.api.nvim_create_user_command(
+						"DapPythonDebugSelection",
+						dap_python.debug_selection,
+						{ desc = "Debug python selection." }
+					)
 				end,
 
 				run = [[
@@ -557,6 +593,7 @@ require("packer").startup(function(use)
 		config = function()
 			local dap = require("dap")
 			local dapui = require("dapui")
+
 			dap.listeners.after.event_initialized["dapui_config"] = function()
 				dapui.open()
 			end
@@ -566,6 +603,11 @@ require("packer").startup(function(use)
 			dap.listeners.before.event_exited["dapui_config"] = function()
 				dapui.close()
 			end
+
+			vim.fn.sign_define(
+				"DapBreakpoint",
+				{ texthl = "DiagnosticSignError", text = "ﭦ", numhl = "DiagnosticSignError" }
+			)
 		end,
 	})
 end)
