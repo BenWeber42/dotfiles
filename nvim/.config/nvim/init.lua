@@ -100,6 +100,7 @@ require("packer").startup(function(use)
 
 	-- automatic basic language support for many languages
 	-- (provides more robust indentation than tree-sitter)
+  -- NOTE: maybe only use regex based indentation for python?
 	use("sheerun/vim-polyglot")
 
 	-- proper grammar parsing
