@@ -514,11 +514,13 @@ require("packer").startup(function(use)
 				},
 			}, default_lsp_settings))
 
-			vim.api.nvim_create_user_command(
-				"LspFormat",
-				vim.lsp.buf.formatting_sync,
-				{ desc = "Format buffer using LSP servers." }
-			)
+			vim.api.nvim_create_user_command("LspFormat", function()
+				vim.lsp.buf.formatting_sync()
+			end, { desc = "Format buffer using LSP servers." })
+
+			vim.api.nvim_create_user_command("LspRename", function()
+				vim.lsp.buf.rename()
+			end, { desc = "Rename symbol using LSP servers." })
 		end,
 	})
 
