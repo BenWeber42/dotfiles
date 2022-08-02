@@ -232,6 +232,8 @@ require("packer").startup(function(use)
 		requires = "kyazdani42/nvim-web-devicons",
 
 		config = function()
+			local nvim_tree = require("nvim-tree")
+
 			-- work-around to have NvimTree auto start
 			vim.api.nvim_create_autocmd("VimEnter", {
 				pattern = "*",
@@ -243,14 +245,14 @@ require("packer").startup(function(use)
 				command = "wincmd p",
 			})
 
-			require("nvim-tree").setup({
+			nvim_tree.setup({
 				renderer = { indent_markers = { enable = true }, highlight_git = true },
 				-- doesn't do what we want
 				--open_on_setup = true,
 			})
 
 			local map_key = vim.keymap.set
-			map_key("n", "<Leader>g", require("nvim-tree").find_file, { noremap = true, silent = true })
+			map_key("n", "<Leader>g", nvim_tree.find_file, { noremap = true, silent = true })
 		end,
 	})
 
