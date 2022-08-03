@@ -497,8 +497,12 @@ require("packer").startup(function(use)
 					},
 				},
 				rust_analyzer = {},
+				fortls = {},
 				ltex = {},
 				texlab = {},
+				bashls = {},
+				cmake = {},
+				yamlls = {},
 			}
 
 			for server_name, server_config in pairs(lsp_settings) do
