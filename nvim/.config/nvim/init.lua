@@ -524,6 +524,20 @@ require("packer").startup(function(use)
 		end,
 	})
 
+	use({
+		"williamboman/mason.nvim",
+
+		requires = "williamboman/mason-lspconfig.nvim",
+		-- FIXME: sequencing and dependencies are quite messy currently
+		after = "nvim-lspconfig",
+
+		config = function()
+				require("mason").setup()
+				require("mason-lspconfig").setup()
+		end
+	})
+
+
 	-- integrated debugging
 	use({
 		-- FIXME: pretty messy in its current state
