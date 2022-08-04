@@ -539,11 +539,10 @@ require("packer").startup(function(use)
 		after = "nvim-lspconfig",
 
 		config = function()
-				require("mason").setup()
-				require("mason-lspconfig").setup()
-		end
+			require("mason").setup()
+			require("mason-lspconfig").setup()
+		end,
 	})
-
 
 	-- integrated debugging
 	use({
