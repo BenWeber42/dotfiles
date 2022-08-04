@@ -253,7 +253,10 @@ require("packer").startup(function(use)
 			})
 
 			local map_key = vim.keymap.set
-			map_key("n", "<Leader>g", nvim_tree.find_file, { noremap = true, silent = true })
+			map_key("n", "<Leader>g", function()
+					nvim_tree.find_file()
+					nvim_tree.focus()
+			end, { noremap = true, silent = true })
 		end,
 	})
 
