@@ -574,6 +574,11 @@ require("packer").startup(function(use)
 									{ id = "breakpoints", size = 0.3 },
 								},
 							},
+							{
+								size = 0.3,
+								position = "bottom",
+								elements = { "console" },
+							},
 						},
 					})
 				end,
