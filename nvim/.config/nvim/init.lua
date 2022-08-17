@@ -414,13 +414,13 @@ require("packer").startup(function(use)
 				"simrat39/symbols-outline.nvim",
 
 				config = function()
-					vim.g.symbols_outline = {
+					require("symbols-outline").setup({
 						relative_width = false,
 						width = 30,
 						symbol_blacklist = {
 							"Variable",
 						},
-					}
+					})
 				end,
 			},
 			{
