@@ -412,6 +412,9 @@ require("packer").startup(function(use)
 		end,
 	})
 
+	-- hook neovim's builtin ui elements
+	use({ "stevearc/dressing.nvim" })
+
 	-- simple key bindings menu
 	use({
 		"folke/which-key.nvim",
