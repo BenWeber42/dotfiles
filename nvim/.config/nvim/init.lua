@@ -210,21 +210,51 @@ require("packer").startup(function(use)
 		},
 
 		config = function()
+			local navic = require("nvim-navic")
+
 			require("lualine").setup({
 				options = {
 					theme = "ayu_mirage",
 					component_separators = { left = "", right = "" },
 					section_separators = { left = "", right = "" },
-					disabled_filetypes = { "NvimTree" },
+					disabled_filetypes = { "NvimTree", "Outline" },
 				},
+
 				sections = {
 					lualine_a = { "mode" },
-					lualine_b = { "filename", "filetype" },
+					lualine_b = { "filename" },
+					lualine_c = {
+						{ navic.get_location, cond = navic.is_available },
+					},
+					lualine_x = {},
+					lualine_y = {},
+					lualine_z = { "location" },
+				},
+
+				inactive_sections = {
+					lualine_a = { "mode" },
+					lualine_b = { "filename" },
 					lualine_c = {},
 					lualine_x = {},
-					lualine_y = { "diff" },
-					lualine_z = { "encoding", "progress", "location" },
+					lualine_y = {},
+					lualine_z = { "location" },
 				},
+
+				-- wait until tabline can be shown only when there are multiple tabs
+				-- tabline = {
+				-- 	lualine_a = { {
+				-- 		"tabs",
+				-- 		mode = 2,
+				-- 		max_length = function()
+				-- 			return vim.o.columns
+				-- 		end,
+				-- 	} },
+				-- 	lualine_b = {},
+				-- 	lualine_c = {},
+				-- 	lualine_x = {},
+				-- 	lualine_y = {},
+				-- 	lualine_z = {},
+				-- },
 			})
 		end,
 	})
