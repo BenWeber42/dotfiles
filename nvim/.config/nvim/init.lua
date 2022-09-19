@@ -40,6 +40,7 @@ opt.wildmode = { "longest", "list" }
 -- enable systemm clipboard
 opt.clipboard:append("unnamedplus")
 opt.updatetime = 500
+opt.timeoutlen = 0
 
 -- my preferred diff options
 opt.diffopt = { "internal", "closeoff" }
@@ -65,12 +66,17 @@ map_key("n", "<C-K>", "<C-W><C-K>", { noremap = true, silent = true })
 map_key("n", "<C-L>", "<C-W><C-L>", { noremap = true, silent = true })
 map_key("n", "<C-H>", "<C-W><C-H>", { noremap = true, silent = true })
 -- maximixe window
-map_key("n", "<Leader>m", ":res<CR>", { noremap = true, silent = true })
+map_key("n", "<Leader>m", ":res<CR>", { noremap = true, silent = true, desc = "maximize current window" })
 -- back to equal window sizes
-map_key("n", "<Leader>n", "<C-W>=", { noremap = true, silent = true })
+map_key("n", "<Leader>n", "<C-W>=", { noremap = true, silent = true, desc = "normalize all window sizes" })
 
 -- edit nvim config
-map_key("n", "<Leader>c", ":e ~/.config/nvim/init.lua<CR>", { noremap = true, silent = true })
+map_key(
+	"n",
+	"<Leader>c",
+	":e ~/.config/nvim/init.lua<CR>",
+	{ noremap = true, silent = true, desc = "edit neovim config" }
+)
 
 -------------------------------------------------------------------------------
 -- Plugins
@@ -85,7 +91,12 @@ require("packer").startup(function(use)
 
 		config = function()
 			local map_key = vim.keymap.set
-			map_key("v", "<Leader>y", require("osc52").copy_visual, { noremap = true, silent = true })
+			map_key(
+				"v",
+				"<Leader>y",
+				require("osc52").copy_visual,
+				{ noremap = true, silent = true, desc = "osc52 copy" }
+			)
 		end,
 	})
 
@@ -289,7 +300,7 @@ require("packer").startup(function(use)
 			map_key("n", "<Leader>g", function()
 				nvim_tree.find_file()
 				nvim_tree.focus()
-			end, { noremap = true, silent = true })
+			end, { noremap = true, silent = true, desc = "find file in tree" })
 		end,
 	})
 
@@ -300,10 +311,10 @@ require("packer").startup(function(use)
 		requires = "junegunn/fzf.vim",
 
 		config = function()
-			local map_key = vim.keymap.set
+			--			local map_key = vim.keymap.set
 			--map_key('n', '<Leader>l', ":FzfBLines<CR>", { noremap = true, silent = true })
-			map_key("n", "<Leader>f", ":FzfFiles<CR>", { noremap = true, silent = true })
-			map_key("n", "<Leader>r", ":FzfRg<CR>", { noremap = true, silent = true })
+			--			map_key("n", "<Leader>f", ":FzfFiles<CR>", { noremap = true, silent = true })
+			--			map_key("n", "<Leader>r", ":FzfRg<CR>", { noremap = true, silent = true })
 			--map_key('n', '<Leader>h', ":FzfHelp<CR>", { noremap = true, silent = true })
 
 			--let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.7 } }
@@ -398,6 +409,65 @@ require("packer").startup(function(use)
 			--		-- has performance issues, using the old fzf plugin for this for now...
 			--		--map_key('n', '<Leader>r', require('fzf-lua').grep_project, { noremap = true, silent = true })
 			--		map_key("n", "<Leader>h", require("fzf-lua").help_tags, { noremap = true, silent = true })
+		end,
+	})
+
+	-- simple key bindings menu
+	use({
+		"folke/which-key.nvim",
+
+		after = {
+			"telescope.nvim",
+			"fzf.vim",
+			"nvim-lspconfig",
+		},
+
+		config = function()
+			local wk = require("which-key")
+			local telescope_builtin = require("telescope.builtin")
+			local telescope = require("telescope")
+
+			wk.setup({
+				-- will probably follow shortly...
+			})
+
+			wk.register({
+				["<leader>"] = {
+					l = {
+						name = "LSP",
+						d = { telescope_builtin.lsp_definitions, "definitions" },
+						r = { telescope_builtin.lsp_references, "references" },
+						s = { telescope_builtin.lsp_document_symbols, "document symbols" },
+						w = { telescope_builtin.lsp_workspace_symbols, "workspace symbols" },
+						e = { telescope_builtin.diagnostics, "document diagnostics" },
+						n = {
+							function()
+								vim.lsp.buf.rename()
+							end,
+							"rename symbol",
+						},
+						f = {
+							function()
+								vim.lsp.buf.formatting_sync()
+							end,
+							"auto-format",
+						},
+						o = { "<cmd>SymbolsOutline<cr>", "symbols outline" },
+					},
+					j = {
+						name = "Vim",
+						l = { telescope_builtin.current_buffer_fuzzy_find, "buffer lines" },
+						b = { telescope_builtin.builtin, "telescope builtins" },
+						h = { telescope_builtin.help_tags, "vim help tags" },
+						c = { telescope_builtin.commands, "vim commands" },
+						j = { telescope_builtin.jumplist, "vim jumps" },
+						o = { telescope.extensions.recent_files.pick, "recent files" },
+						f = { "<cmd>FzfFiles<cr>", "files" },
+						r = { "<cmd>FzfRg<cr>", "file contents" },
+						s = { telescope_builtin.symbols, "unicode symbols" },
+					},
+				},
+			})
 		end,
 	})
 
