@@ -313,6 +313,67 @@ require("packer").startup(function(use)
 		end,
 	})
 
+	-- finder for various lists
+	use({
+		"nvim-telescope/telescope.nvim",
+
+		branch = "0.1.x",
+
+		requires = {
+			{ "nvim-lua/plenary.nvim" },
+			{
+				"nvim-telescope/telescope-fzf-native.nvim",
+				run = "make",
+			},
+			{ "smartpde/telescope-recent-files" },
+			{ "nvim-telescope/telescope-symbols.nvim" },
+		},
+
+		config = function()
+			local telescope = require("telescope")
+			local actions = require("telescope.actions")
+
+			telescope.setup({
+				defaults = {
+					mappings = {
+						i = {
+							["<C-j>"] = actions.move_selection_next,
+							["<C-k>"] = actions.move_selection_previous,
+							["<esc>"] = actions.close,
+						},
+					},
+					layout_strategy = "flex",
+					layout_config = {
+						prompt_position = "top",
+					},
+					sorting_strategy = "ascending",
+				},
+				pickers = {
+					diagnostics = {
+						bufnr = 0, -- use only current buffer diagnostics
+					},
+					jumplist = {
+						fname_width = 100, -- use more space to display file name
+					},
+				},
+			})
+
+			telescope.load_extension("fzf")
+			telescope.load_extension("recent_files")
+
+			--			local builtin = require("telescope.builtin")
+
+			--			local map_key = vim.keymap.set
+			--			map_key("n", "<Leader>b", builtin.builtin, { noremap = true, silent = true })
+			--			map_key("n", "<Leader>l", builtin.current_buffer_fuzzy_find, { noremap = true, silent = true })
+			-- has performance issues, using the old fzf plugin for this for now...
+			-- map_key("n", "<Leader>f", require('fzf-lua').files, { noremap = true, silent = true })
+			-- has performance issues, using the old fzf plugin for this for now...
+			--map_key('n', '<Leader>r', require('fzf-lua').grep_project, { noremap = true, silent = true })
+			--			map_key("n", "<Leader>h", builtin.help_tags, { noremap = true, silent = true })
+		end,
+	})
+
 	-- fzf commands in lua
 	-- I'd like to completely migrate to fzf-lua, however, there's still some issues
 	use({
@@ -329,14 +390,14 @@ require("packer").startup(function(use)
 				blines = { show_unlisted = true },
 			})
 
-			local map_key = vim.keymap.set
-			map_key("n", "<Leader>b", require("fzf-lua").builtin, { noremap = true, silent = true })
-			map_key("n", "<Leader>l", require("fzf-lua").blines, { noremap = true, silent = true })
-			-- has performance issues, using the old fzf plugin for this for now...
-			-- map_key("n", "<Leader>f", require('fzf-lua').files, { noremap = true, silent = true })
-			-- has performance issues, using the old fzf plugin for this for now...
-			--map_key('n', '<Leader>r', require('fzf-lua').grep_project, { noremap = true, silent = true })
-			map_key("n", "<Leader>h", require("fzf-lua").help_tags, { noremap = true, silent = true })
+			--		local map_key = vim.keymap.set
+			--		map_key("n", "<Leader>b", require("fzf-lua").builtin, { noremap = true, silent = true })
+			--		map_key("n", "<Leader>l", require("fzf-lua").blines, { noremap = true, silent = true })
+			--		-- has performance issues, using the old fzf plugin for this for now...
+			--		-- map_key("n", "<Leader>f", require('fzf-lua').files, { noremap = true, silent = true })
+			--		-- has performance issues, using the old fzf plugin for this for now...
+			--		--map_key('n', '<Leader>r', require('fzf-lua').grep_project, { noremap = true, silent = true })
+			--		map_key("n", "<Leader>h", require("fzf-lua").help_tags, { noremap = true, silent = true })
 		end,
 	})
 
