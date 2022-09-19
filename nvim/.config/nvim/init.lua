@@ -481,8 +481,11 @@ require("packer").startup(function(use)
 		requires = {
 			{ "hrsh7th/cmp-buffer" },
 			{ "hrsh7th/cmp-path" },
+			{ "hrsh7th/cmp-nvim-lua" },
 			{ "hrsh7th/cmp-nvim-lsp" },
 			{ "onsails/lspkind-nvim" },
+			{ "hrsh7th/cmp-cmdline" },
+			{ "dmitmel/cmp-cmdline-history" },
 
 			-- snippets
 			{
@@ -509,12 +512,13 @@ require("packer").startup(function(use)
 		config = function()
 			local cmp = require("cmp")
 
+			local luasnip = require("luasnip")
+
 			local has_words_before = function()
 				local line, col = unpack(vim.api.nvim_win_get_cursor(0))
 				return col ~= 0
 					and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 			end
-			local luasnip = require("luasnip")
 
 			local next_fun = function(fallback)
 				if cmp.visible() then
@@ -538,35 +542,84 @@ require("packer").startup(function(use)
 				end
 			end
 
-			cmp.setup({
+			local mapping = {
+				["<Tab>"] = cmp.mapping(next_fun, { "i", "s", "c" }),
+				["<C-j>"] = cmp.mapping(next_fun, { "i", "s", "c" }),
 
+				["<S-Tab>"] = cmp.mapping(prev_fun, { "i", "s", "c" }),
+				["<C-k>"] = cmp.mapping(prev_fun, { "i", "s", "c" }),
+
+				["<CR>"] = cmp.mapping.confirm({ select = true }),
+			}
+
+			local formatting = {
+				format = require("lspkind").cmp_format({
+					maxwidth = 50,
+					preset = "codicons",
+					menu = {
+						nvim_lsp = "[LSP]",
+						buffer = "[Buffer]",
+						path = "[path]",
+						nvim_lua = "[Lua]",
+						luasnip = "[LuaSnip]",
+						cmdline = "[CmdLine]",
+						cmdline_history = "[CmdLineHistory]",
+					},
+				}),
+			}
+
+			cmp.setup({
 				snippet = {
 					-- I don't want snippets, but nvim-cmp requires its...
 					expand = function(args)
 						require("luasnip").lsp_expand(args.body)
 					end,
 				},
-
 				sources = cmp.config.sources({
 					{ name = "nvim_lsp" },
 					{ name = "buffer" },
 					{ name = "path" },
 					{ name = "luasnip" },
 				}),
+				mapping = cmp.mapping.preset.insert(mapping),
+				formatting = formatting,
+			})
 
-				mapping = {
+			cmp.setup.filetype("lua", {
+				sources = cmp.config.sources({
+					{ name = "nvim_lsp" },
+					{ name = "buffer" },
+					{ name = "path" },
+					{ name = "nvim_lua" },
+					{ name = "luasnip" },
+				}),
+			})
 
-					["<Tab>"] = cmp.mapping(next_fun, { "i", "s" }),
-					["<C-j>"] = cmp.mapping(next_fun, { "i", "s" }),
+			cmp.setup.cmdline(":", {
+				sources = cmp.config.sources({
+					{ name = "cmdline" },
+					{ name = "cmdline_history" },
+				}),
+				mapping = cmp.mapping.preset.cmdline(mapping),
+				formatting = formatting,
+			})
 
-					["<S-Tab>"] = cmp.mapping(prev_fun, { "i", "s" }),
-					["<C-k>"] = cmp.mapping(prev_fun, { "i", "s" }),
+			cmp.setup.cmdline("/", {
+				sources = cmp.config.sources({
+					{ name = "buffer" },
+					{ name = "cmdline_history" },
+				}),
+				mapping = cmp.mapping.preset.cmdline(mapping),
+				formatting = formatting,
+			})
 
-					["<CR>"] = cmp.mapping.confirm({ select = true }),
-				},
-				formatting = {
-					format = require("lspkind").cmp_format({ maxwidth = 50 }),
-				},
+			cmp.setup.cmdline("?", {
+				sources = cmp.config.sources({
+					{ name = "buffer" },
+					{ name = "cmdline_history" },
+				}),
+				mapping = cmp.mapping.preset.cmdline(mapping),
+				formatting = formatting,
 			})
 		end,
 	})
