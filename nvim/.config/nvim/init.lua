@@ -204,7 +204,10 @@ require("packer").startup(function(use)
 	use({
 		"nvim-lualine/lualine.nvim",
 
-		requires = "kyazdani42/nvim-web-devicons",
+		requires = {
+			"kyazdani42/nvim-web-devicons",
+			"SmiteshP/nvim-navic", -- lsp bread crumbs
+		},
 
 		config = function()
 			require("lualine").setup({
@@ -409,6 +412,7 @@ require("packer").startup(function(use)
 		"neovim/nvim-lspconfig",
 
 		requires = {
+			-- NOTE: there is also "zhrsh7th/cmp-nvim-lsp-signature-help" (could consider switching)
 			{ "ray-x/lsp_signature.nvim" },
 			{
 				"simrat39/symbols-outline.nvim",
@@ -461,19 +465,22 @@ require("packer").startup(function(use)
 		config = function()
 			local lspconfig = require("lspconfig")
 
-			local lsp_signature = require("lsp_signature")
-			local illuminate = require("illuminate")
+			require("lsp_signature").setup({})
+			local navic = require("nvim-navic")
 
-			local on_attach = function(client)
-				lsp_signature.on_attach()
-				illuminate.on_attach(client)
+			-- `on_attach` function for language lsps (not `null-ls`)
+			local on_attach_lang = function(client, bufnr)
+				navic.attach(client, bufnr)
 			end
 
 			local capabilities =
 				require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
 
+			local default_lang_lsp_settings = {
+				on_attach = on_attach_lang,
+			}
+
 			local default_lsp_settings = {
-				on_attach = on_attach,
 				capabilities = capabilities,
 			}
 
@@ -509,7 +516,9 @@ require("packer").startup(function(use)
 			}
 
 			for server_name, server_config in pairs(lsp_settings) do
-				lspconfig[server_name].setup(vim.tbl_extend("keep", server_config, default_lsp_settings))
+				lspconfig[server_name].setup(
+					vim.tbl_extend("keep", server_config, default_lang_lsp_settings, default_lsp_settings)
+				)
 			end
 
 			-- null-ls isn't supported by lspconfig
