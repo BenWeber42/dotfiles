@@ -458,7 +458,7 @@ require("lazy").setup({
 					dependencies = "L3MON4D3/LuaSnip",
 					config = function(friendly_snippets)
 						-- setup friendly-snippets
-						require("luasnip.loaders.from_vscode").load({ paths = { friendly_snippets.dir } })
+						require("luasnip.loaders.from_vscode").lazy_load({ paths = { friendly_snippets.dir } })
 					end,
 				},
 			},
