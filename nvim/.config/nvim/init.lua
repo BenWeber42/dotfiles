@@ -318,14 +318,6 @@ require("lazy").setup({
 		dependencies = "junegunn/fzf",
 
 		init = function()
-			--			local map_key = vim.keymap.set
-			--map_key('n', '<Leader>l', ":FzfBLines<CR>", { noremap = true, silent = true })
-			--			map_key("n", "<Leader>f", ":FzfFiles<CR>", { noremap = true, silent = true })
-			--			map_key("n", "<Leader>r", ":FzfRg<CR>", { noremap = true, silent = true })
-			--map_key('n', '<Leader>h', ":FzfHelp<CR>", { noremap = true, silent = true })
-
-			--let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.7 } }
-			--let g:fzf_command_prefix = 'Fzf'
 			vim.g.fzf_layout = { window = { width = 0.9, height = 0.7 } }
 			vim.g.fzf_command_prefix = "Fzf"
 		end,
@@ -378,17 +370,6 @@ require("lazy").setup({
 
 			telescope.load_extension("fzf")
 			telescope.load_extension("recent_files")
-
-			--			local builtin = require("telescope.builtin")
-
-			--			local map_key = vim.keymap.set
-			--			map_key("n", "<Leader>b", builtin.builtin, { noremap = true, silent = true })
-			--			map_key("n", "<Leader>l", builtin.current_buffer_fuzzy_find, { noremap = true, silent = true })
-			-- has performance issues, using the old fzf plugin for this for now...
-			-- map_key("n", "<Leader>f", require('fzf-lua').files, { noremap = true, silent = true })
-			-- has performance issues, using the old fzf plugin for this for now...
-			--map_key('n', '<Leader>r', require('fzf-lua').grep_project, { noremap = true, silent = true })
-			--			map_key("n", "<Leader>h", builtin.help_tags, { noremap = true, silent = true })
 		end,
 	},
 
