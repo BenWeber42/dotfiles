@@ -376,33 +376,6 @@ require("packer").startup(function(use)
 		end,
 	})
 
-	-- fzf commands in lua
-	-- I'd like to completely migrate to fzf-lua, however, there's still some issues
-	use({
-		"ibhagwan/fzf-lua",
-
-		requires = {
-			"vijaymarupudi/nvim-fzf",
-			"kyazdani42/nvim-web-devicons",
-		},
-
-		config = function()
-			require("fzf-lua").setup({
-				files = { multiprocess = false },
-				blines = { show_unlisted = true },
-			})
-
-			--		local map_key = vim.keymap.set
-			--		map_key("n", "<Leader>b", require("fzf-lua").builtin, { noremap = true, silent = true })
-			--		map_key("n", "<Leader>l", require("fzf-lua").blines, { noremap = true, silent = true })
-			--		-- has performance issues, using the old fzf plugin for this for now...
-			--		-- map_key("n", "<Leader>f", require('fzf-lua').files, { noremap = true, silent = true })
-			--		-- has performance issues, using the old fzf plugin for this for now...
-			--		--map_key('n', '<Leader>r', require('fzf-lua').grep_project, { noremap = true, silent = true })
-			--		map_key("n", "<Leader>h", require("fzf-lua").help_tags, { noremap = true, silent = true })
-		end,
-	})
-
 	-- hook neovim's builtin ui elements
 	use({ "stevearc/dressing.nvim" })
 
