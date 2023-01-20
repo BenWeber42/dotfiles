@@ -200,7 +200,7 @@ require("lazy").setup({
 	},
 
 	-- git utilities
-	{ "tpope/vim-fugitive" },
+	"tpope/vim-fugitive",
 
 	-- highlight TODO comments
 	{
@@ -393,7 +393,7 @@ require("lazy").setup({
 	},
 
 	-- hook neovim's builtin ui elements
-	{ "stevearc/dressing.nvim" },
+	"stevearc/dressing.nvim",
 
 	-- simple key bindings menu
 	{
