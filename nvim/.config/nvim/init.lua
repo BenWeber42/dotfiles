@@ -100,15 +100,6 @@ require("packer").startup(function(use)
 		end,
 	})
 
-	-- stabilizes windows/cursors when new windows are opened
-	use({
-		"luukvbaal/stabilize.nvim",
-
-		config = function()
-			require("stabilize").setup()
-		end,
-	})
-
 	-- automatic basic language support for many languages
 	-- (provides more robust indentation than tree-sitter)
 	-- NOTE: maybe only use regex based indentation for python?
