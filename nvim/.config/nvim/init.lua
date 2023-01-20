@@ -78,15 +78,29 @@ map_key(
 	{ noremap = true, silent = true, desc = "edit neovim config" }
 )
 
+-- Bootstrap lazy.nvim
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+	vim.fn.system({
+		"git",
+		"clone",
+		"--filter=blob:none",
+		"https://github.com/folke/lazy.nvim.git",
+		"--branch=stable",
+		lazypath,
+	})
+end
+vim.opt.rtp:prepend(lazypath)
+
 -------------------------------------------------------------------------------
 -- Plugins
 -------------------------------------------------------------------------------
-require("packer").startup(function(use)
+require("lazy").setup({
 	-- Packer can manage itself
-	use("wbthomason/packer.nvim")
+	"wbthomason/packer.nvim",
 
 	-- copy over ssh with ansi control code
-	use({
+	{
 		"ojroques/nvim-osc52",
 
 		config = function()
@@ -98,18 +112,18 @@ require("packer").startup(function(use)
 				{ noremap = true, silent = true, desc = "osc52 copy" }
 			)
 		end,
-	})
+	},
 
 	-- automatic basic language support for many languages
 	-- (provides more robust indentation than tree-sitter)
 	-- NOTE: maybe only use regex based indentation for python?
-	use("sheerun/vim-polyglot")
+	"sheerun/vim-polyglot",
 
 	-- proper grammar parsing
-	use({
+	{
 		"nvim-treesitter/nvim-treesitter",
 
-		run = ":TSUpdate",
+		build = ":TSUpdate",
 
 		config = function()
 			require("nvim-treesitter.configs").setup({
@@ -123,13 +137,17 @@ require("packer").startup(function(use)
 				indent = { enable = false },
 			})
 		end,
-	})
+	},
 
 	-- nordfox colorscheme
-	use({
+	{
 		"EdenEast/nightfox.nvim",
 
-		run = function()
+		-- Make sure we load the colorscheme early
+		lazy = false,
+		priority = 1000,
+
+		build = function()
 			local nightfox = require("nightfox")
 			nightfox.init({ styles = { keywords = "italic" } })
 			nightfox.compile()
@@ -138,28 +156,28 @@ require("packer").startup(function(use)
 		config = function()
 			vim.cmd("colorscheme nordfox")
 		end,
-	})
+	},
 
 	-- highlight word under curosr
-	use({
+	{
 		"RRethy/vim-illuminate",
 
 		config = function()
 			vim.g.Illuminate_delay = 500
 		end,
-	})
+	},
 
 	-- colorize color codes
-	use({
+	{
 		"norcalli/nvim-colorizer.lua",
 
 		config = function()
 			require("colorizer").setup()
 		end,
-	})
+	},
 
 	-- indentation lines
-	use({
+	{
 		"lukas-reineke/indent-blankline.nvim",
 
 		config = function()
@@ -170,27 +188,27 @@ require("packer").startup(function(use)
 				show_current_context_start = true,
 			})
 		end,
-	})
+	},
 
 	-- git annotations
-	use({
+	{
 		"lewis6991/gitsigns.nvim",
 
-		requires = "nvim-lua/plenary.nvim",
+		dependencies = "nvim-lua/plenary.nvim",
 
 		config = function()
 			require("gitsigns").setup()
 		end,
-	})
+	},
 
 	-- git utilities
-	use({ "tpope/vim-fugitive" })
+	{ "tpope/vim-fugitive" },
 
 	-- highlight TODO comments
-	use({
+	{
 		"folke/todo-comments.nvim",
 
-		requires = "nvim-lua/plenary.nvim",
+		dependencies = "nvim-lua/plenary.nvim",
 
 		config = function()
 			require("todo-comments").setup({
@@ -200,13 +218,13 @@ require("packer").startup(function(use)
 				},
 			})
 		end,
-	})
+	},
 
 	-- status line
-	use({
+	{
 		"nvim-lualine/lualine.nvim",
 
-		requires = {
+		dependencies = {
 			"kyazdani42/nvim-web-devicons",
 			"SmiteshP/nvim-navic", -- lsp bread crumbs
 		},
@@ -259,13 +277,13 @@ require("packer").startup(function(use)
 				-- },
 			})
 		end,
-	})
+	},
 
 	-- file tree
-	use({
+	{
 		"kyazdani42/nvim-tree.lua",
 
-		requires = "kyazdani42/nvim-web-devicons",
+		dependencies = "kyazdani42/nvim-web-devicons",
 
 		config = function()
 			local nvim_tree = require("nvim-tree")
@@ -293,15 +311,15 @@ require("packer").startup(function(use)
 				nvim_tree.focus()
 			end, { noremap = true, silent = true, desc = "find file in tree" })
 		end,
-	})
+	},
 
 	-- original fzf
-	use({
-		"junegunn/fzf",
+	{
+		"junegunn/fzf.vim",
 
-		requires = "junegunn/fzf.vim",
+		dependencies = "junegunn/fzf",
 
-		config = function()
+		init = function()
 			--			local map_key = vim.keymap.set
 			--map_key('n', '<Leader>l', ":FzfBLines<CR>", { noremap = true, silent = true })
 			--			map_key("n", "<Leader>f", ":FzfFiles<CR>", { noremap = true, silent = true })
@@ -313,22 +331,22 @@ require("packer").startup(function(use)
 			vim.g.fzf_layout = { window = { width = 0.9, height = 0.7 } }
 			vim.g.fzf_command_prefix = "Fzf"
 		end,
-	})
+	},
 
 	-- finder for various lists
-	use({
+	{
 		"nvim-telescope/telescope.nvim",
 
 		branch = "0.1.x",
 
-		requires = {
-			{ "nvim-lua/plenary.nvim" },
+		dependencies = {
+			"nvim-lua/plenary.nvim",
 			{
 				"nvim-telescope/telescope-fzf-native.nvim",
-				run = "make",
+				build = "make",
 			},
-			{ "smartpde/telescope-recent-files" },
-			{ "nvim-telescope/telescope-symbols.nvim" },
+			"smartpde/telescope-recent-files",
+			"nvim-telescope/telescope-symbols.nvim",
 		},
 
 		config = function()
@@ -374,19 +392,19 @@ require("packer").startup(function(use)
 			--map_key('n', '<Leader>r', require('fzf-lua').grep_project, { noremap = true, silent = true })
 			--			map_key("n", "<Leader>h", builtin.help_tags, { noremap = true, silent = true })
 		end,
-	})
+	},
 
 	-- hook neovim's builtin ui elements
-	use({ "stevearc/dressing.nvim" })
+	{ "stevearc/dressing.nvim" },
 
 	-- simple key bindings menu
-	use({
+	{
 		"folke/which-key.nvim",
 
-		after = {
-			"telescope.nvim",
-			"fzf.vim",
-			"nvim-lspconfig",
+		dependencies = {
+			"nvim-telescope/telescope.nvim",
+			"junegunn/fzf.vim",
+			"neovim/nvim-lspconfig",
 		},
 
 		config = function()
@@ -436,39 +454,33 @@ require("packer").startup(function(use)
 				},
 			})
 		end,
-	})
+	},
 
 	-- completion engine
-	use({
+	{
 		"hrsh7th/nvim-cmp",
 
-		requires = {
-			{ "hrsh7th/cmp-buffer" },
-			{ "hrsh7th/cmp-path" },
-			{ "hrsh7th/cmp-nvim-lua" },
-			{ "hrsh7th/cmp-nvim-lsp" },
-			{ "onsails/lspkind-nvim" },
-			{ "hrsh7th/cmp-cmdline" },
-			{ "dmitmel/cmp-cmdline-history" },
+		dependencies = {
+			"hrsh7th/cmp-buffer",
+			"hrsh7th/cmp-path",
+			"hrsh7th/cmp-nvim-lua",
+			"hrsh7th/cmp-nvim-lsp",
+			"onsails/lspkind-nvim",
+			"hrsh7th/cmp-cmdline",
+			"dmitmel/cmp-cmdline-history",
 
 			-- snippets
 			{
 				"saadparwaiz1/cmp_luasnip",
-				requires = {
-					{
-						"L3MON4D3/LuaSnip",
-						-- nice snippet collection
-						requires = "rafamadriz/friendly-snippets",
-						config = function()
-							-- setup friendly-snippets
-							require("luasnip.loaders.from_vscode").load({
-								paths = {
-									-- NOTE: isn't there a way to get the plugin path from packer?
-									"~/.local/share/nvim/site/pack/packer/start/friendly-snippets/",
-								},
-							})
-						end,
-					},
+				dependencies = {
+					-- nice snippet collection
+					"rafamadriz/friendly-snippets",
+					-- we revert the dependency, so we can easly get the path to `friendly-snippets`
+					dependencies = "L3MON4D3/LuaSnip",
+					config = function(friendly_snippets)
+						-- setup friendly-snippets
+						require("luasnip.loaders.from_vscode").load({ paths = { friendly_snippets.dir } })
+					end,
 				},
 			},
 		},
@@ -586,15 +598,14 @@ require("packer").startup(function(use)
 				formatting = formatting,
 			})
 		end,
-	})
+	},
 
 	-- LSP configurations
-	use({
+	{
 		"neovim/nvim-lspconfig",
-
-		requires = {
+		dependencies = {
 			-- NOTE: there is also "zhrsh7th/cmp-nvim-lsp-signature-help" (could consider switching)
-			{ "ray-x/lsp_signature.nvim" },
+			"ray-x/lsp_signature.nvim",
 			{
 				"simrat39/symbols-outline.nvim",
 
@@ -623,12 +634,12 @@ require("packer").startup(function(use)
 			},
 			{
 				"jose-elias-alvarez/null-ls.nvim",
-				requires = "nvim-lua/plenary.nvim",
+				dependencies = "nvim-lua/plenary.nvim",
 			},
 			{
 				-- display diagnostics
 				"folke/trouble.nvim",
-				requires = "kyazdani42/nvim-web-devicons",
+				dependencies = "kyazdani42/nvim-web-devicons",
 				config = function()
 					require("trouble").setup({
 						-- use "document_diagnostics" by default
@@ -638,10 +649,8 @@ require("packer").startup(function(use)
 					})
 				end,
 			},
+			"hrsh7th/nvim-cmp",
 		},
-
-		-- is this really needed?
-		after = "nvim-cmp",
 
 		config = function()
 			local lspconfig = require("lspconfig")
@@ -719,20 +728,21 @@ require("packer").startup(function(use)
 				vim.lsp.buf.rename()
 			end, { desc = "Rename symbol using LSP servers." })
 		end,
-	})
+	},
 
-	use({
+	{
 		"williamboman/mason.nvim",
 
-		requires = "williamboman/mason-lspconfig.nvim",
-		-- FIXME: sequencing and dependencies are quite messy currently
-		after = "nvim-lspconfig",
+		dependencies = {
+			"williamboman/mason-lspconfig.nvim",
+			"neovim/nvim-lspconfig",
+		},
 
 		config = function()
 			require("mason").setup()
 			require("mason-lspconfig").setup()
 		end,
-	})
-end)
+	},
+})
 
 -- vim: noexpandtab tabstop=2 shiftwidth=2
