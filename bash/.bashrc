@@ -2,7 +2,7 @@
 [[ $- != *i* ]] && return
 
 # number of history commands to remember
-HISTSIZE=10000
+HISTSIZE=100000
 
 alias ls='ls --color=auto'
 alias ll='exa -la'
