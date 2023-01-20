@@ -96,8 +96,6 @@ vim.opt.rtp:prepend(lazypath)
 -- Plugins
 -------------------------------------------------------------------------------
 require("lazy").setup({
-	-- Packer can manage itself
-	"wbthomason/packer.nvim",
 
 	-- copy over ssh with ansi control code
 	{
