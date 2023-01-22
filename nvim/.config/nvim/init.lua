@@ -171,7 +171,7 @@ require("lazy").setup({
 
 		config = function()
 			require("indent_blankline").setup({
-				char = "",
+				char = "│",
 				show_trailing_blankline_indent = false,
 				show_current_context = true,
 				show_current_context_start = true,
