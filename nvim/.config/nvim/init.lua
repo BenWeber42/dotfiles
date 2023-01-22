@@ -16,7 +16,8 @@ opt.relativenumber = true
 -- always show some lines above/below for context
 opt.scrolloff = 5
 -- remove the weird `~` at the end of buffers
-opt.fillchars:append({ eob = " " })
+-- Fill diff deletions with diagonal lines
+opt.fillchars:append({ eob = " ", diff = "╱" })
 -- show tabs and trailing spaces
 opt.list = true
 opt.listchars = { trail = "·", tab = "  ›" }
@@ -36,14 +37,13 @@ opt.wildmode = { "longest", "list" }
 -- change splitting behaviour
 opt.splitright = true
 opt.splitbelow = true
-opt.wildmode = { "longest", "list" }
 -- enable systemm clipboard
 opt.clipboard:append("unnamedplus")
 opt.updatetime = 500
 opt.timeoutlen = 0
 
 -- my preferred diff options
-opt.diffopt = { "internal", "closeoff" }
+opt.diffopt = { "internal", "closeoff", "filler", "vertical" }
 
 -------------------------------------------------------------------------------
 -- Vim Key bindings
