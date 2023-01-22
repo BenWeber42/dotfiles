@@ -446,6 +446,16 @@ require("lazy").setup({
 		end,
 	},
 
+	-- diff view
+	{
+		"sindrets/diffview.nvim",
+
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"kyazdani42/nvim-web-devicons",
+		},
+	},
+
 	-- completion engine
 	{
 		"hrsh7th/nvim-cmp",
