@@ -462,7 +462,7 @@ require("lazy").setup({
 			local has_words_before = function()
 				local line, col = unpack(vim.api.nvim_win_get_cursor(0))
 				return col ~= 0
-					and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+						and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 			end
 
 			local next_fun = function(fallback)
@@ -504,7 +504,7 @@ require("lazy").setup({
 					menu = {
 						nvim_lsp = "[LSP]",
 						buffer = "[Buffer]",
-						path = "[path]",
+						path = "[Path]",
 						nvim_lua = "[Lua]",
 						luasnip = "[LuaSnip]",
 						cmdline = "[CmdLine]",
@@ -515,7 +515,6 @@ require("lazy").setup({
 
 			cmp.setup({
 				snippet = {
-					-- I don't want snippets, but nvim-cmp requires its...
 					expand = function(args)
 						require("luasnip").lsp_expand(args.body)
 					end,
