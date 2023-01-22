@@ -45,15 +45,6 @@ opt.timeoutlen = 0
 -- my preferred diff options
 opt.diffopt = { "internal", "closeoff" }
 
--- proper sign symbols:
-vim.fn.sign_define(
-	"DiagnosticSignError",
-	{ texthl = "DiagnosticSignError", text = "", numhl = "DiagnosticSignError" }
-)
-vim.fn.sign_define("DiagnosticSignWarn", { texthl = "DiagnosticSignWarn", text = "", numhl = "DiagnosticSignWarn" })
-vim.fn.sign_define("DiagnosticSignHint", { texthl = "DiagnosticSignHint", text = "", numhl = "DiagnosticSignHint" })
-vim.fn.sign_define("DiagnosticSignInfo", { texthl = "DiagnosticSignInfo", text = "", numhl = "DiagnosticSignInfo" })
-
 -------------------------------------------------------------------------------
 -- Vim Key bindings
 -------------------------------------------------------------------------------
@@ -442,9 +433,8 @@ require("lazy").setup({
 		dependencies = {
 			"hrsh7th/cmp-buffer",
 			"hrsh7th/cmp-path",
-			"hrsh7th/cmp-nvim-lua",
 			"hrsh7th/cmp-nvim-lsp",
-			"onsails/lspkind-nvim",
+			"onsails/lspkind.nvim",
 			"hrsh7th/cmp-cmdline",
 			"dmitmel/cmp-cmdline-history",
 
@@ -540,16 +530,6 @@ require("lazy").setup({
 				formatting = formatting,
 			})
 
-			cmp.setup.filetype("lua", {
-				sources = cmp.config.sources({
-					{ name = "nvim_lsp" },
-					{ name = "buffer" },
-					{ name = "path" },
-					{ name = "nvim_lua" },
-					{ name = "luasnip" },
-				}),
-			})
-
 			cmp.setup.cmdline(":", {
 				sources = cmp.config.sources({
 					{ name = "cmdline" },
@@ -579,147 +559,154 @@ require("lazy").setup({
 		end,
 	},
 
-	-- LSP configurations
 	{
-		"neovim/nvim-lspconfig",
-		dependencies = {
-			-- NOTE: there is also "zhrsh7th/cmp-nvim-lsp-signature-help" (could consider switching)
-			"ray-x/lsp_signature.nvim",
-			{
-				"simrat39/symbols-outline.nvim",
+		"VonHeikemen/lsp-zero.nvim",
+		branch = "v1.x",
 
-				config = function()
-					require("symbols-outline").setup({
-						relative_width = false,
-						width = 30,
-						symbol_blacklist = {
-							"Variable",
-						},
-					})
-				end,
-			},
-			{
-				"kosayoda/nvim-lightbulb",
-				config = function()
-					vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-						pattern = "*",
-						callback = require("nvim-lightbulb").update_lightbulb,
-					})
-				end,
-			},
+		dependencies = {
+
+			"neovim/nvim-lspconfig",
+			"hrsh7th/cmp-nvim-lsp",
+			"kosayoda/nvim-lightbulb",
+			"ray-x/lsp_signature.nvim",
 			{
 				"weilbith/nvim-code-action-menu",
 				cmd = "CodeActionMenu",
 			},
+			"simrat39/symbols-outline.nvim",
+			{
+				-- display diagnostics
+				"folke/trouble.nvim",
+				dependencies = "kyazdani42/nvim-web-devicons",
+			},
+			"folke/neodev.nvim",
 			{
 				"jose-elias-alvarez/null-ls.nvim",
 				dependencies = "nvim-lua/plenary.nvim",
 			},
 			{
-				-- display diagnostics
-				"folke/trouble.nvim",
-				dependencies = "kyazdani42/nvim-web-devicons",
-				config = function()
-					require("trouble").setup({
-						-- use "document_diagnostics" by default
-						mode = "document_diagnostics",
-						-- use my own defined signs
-						use_diagnostic_signs = true,
-					})
-				end,
+				"williamboman/mason-lspconfig.nvim",
+				dependencies = {
+					"williamboman/mason.nvim",
+					"neovim/nvim-lspconfig",
+				},
 			},
-			"hrsh7th/nvim-cmp",
+			{
+				"jay-babu/mason-null-ls.nvim",
+				dependencies = {
+					"williamboman/mason.nvim",
+					"jose-elias-alvarez/null-ls.nvim",
+				},
+			},
 		},
 
 		config = function()
-			local lspconfig = require("lspconfig")
-
-			require("lsp_signature").setup({})
-			local navic = require("nvim-navic")
-
-			-- `on_attach` function for language lsps (not `null-ls`)
-			local on_attach_lang = function(client, bufnr)
-				navic.attach(client, bufnr)
-			end
-
-			local capabilities =
-				require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
-
-			local default_lang_lsp_settings = {
-				on_attach = on_attach_lang,
-			}
-
-			local default_lsp_settings = {
-				capabilities = capabilities,
-			}
-
-			local lsp_settings = {
-				pyright = {},
-				clangd = {},
-				sumneko_lua = {
-					cmd = { "lua-language-server" },
-					settings = {
-						Lua = {
-							runtime = {
-								version = "LuaJIT",
-								path = vim.split(package.path, ";"),
-							},
-							diagnostics = {
-								-- Get the language server to recognize the `vim` global
-								globals = { "vim" },
-							},
-							workspace = {
-								-- Make the server aware of Neovim runtime files
-								library = vim.api.nvim_get_runtime_file("", true),
-							},
-						},
-					},
-				},
-				rust_analyzer = {},
-				fortls = {},
-				ltex = {},
-				texlab = {},
-				bashls = {},
-				cmake = {},
-				yamlls = {},
-			}
-
-			for server_name, server_config in pairs(lsp_settings) do
-				lspconfig[server_name].setup(
-					vim.tbl_extend("keep", server_config, default_lang_lsp_settings, default_lsp_settings)
-				)
-			end
-
-			-- null-ls isn't supported by lspconfig
-			local null_ls = require("null-ls")
-			null_ls.setup(vim.tbl_extend("keep", {
-				sources = {
-					null_ls.builtins.formatting.black,
-					null_ls.builtins.formatting.stylua,
-				},
-			}, default_lsp_settings))
-
+			-- some seful LSP commands
 			vim.api.nvim_create_user_command("LspFormat", function()
-				vim.lsp.buf.formatting_sync()
+				vim.lsp.buf.format()
 			end, { desc = "Format buffer using LSP servers." })
 
 			vim.api.nvim_create_user_command("LspRename", function()
 				vim.lsp.buf.rename()
 			end, { desc = "Rename symbol using LSP servers." })
-		end,
-	},
 
-	{
-		"williamboman/mason.nvim",
+			vim.api.nvim_create_user_command("LspHover", function()
+				vim.lsp.buf.hover()
+			end, { desc = "Show info at cursor using LSP." })
 
-		dependencies = {
-			"williamboman/mason-lspconfig.nvim",
-			"neovim/nvim-lspconfig",
-		},
+			vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+				pattern = "*",
+				callback = require("nvim-lightbulb").update_lightbulb,
+			})
 
-		config = function()
+			require("lsp_signature").setup({})
+
+			require("symbols-outline").setup({
+				relative_width = false,
+				width = 30,
+				symbol_blacklist = {
+					"Variable",
+				},
+			})
+
+			require("trouble").setup({
+				-- use "document_diagnostics" by default
+				mode = "document_diagnostics",
+				-- use my own defined signs
+				use_diagnostic_signs = true,
+			})
+
+			require("neodev").setup({
+				setup_jsonls = false,
+				override = function(root_dir, library)
+					-- enable it for all lua files
+					library.enabled = true
+					library.runtime = true
+					library.types = true
+					library.plugins = true
+				end,
+			})
+
+			-- null-ls isn't supported by lspconfig
+			local null_ls = require("null-ls")
+			null_ls.setup({
+				sources = {
+					null_ls.builtins.formatting.black,
+					null_ls.builtins.formatting.stylua,
+				},
+			})
+
 			require("mason").setup()
 			require("mason-lspconfig").setup()
+			require("mason-null-ls").setup({
+				ensure_installed = nil,
+				automatic_installation = true,
+				automatic_setup = false,
+			})
+
+			local lsp_zero = require("lsp-zero")
+
+			lsp_zero.set_preferences({
+				suggest_lsp_servers = true,
+				setup_servers_on_start = true,
+				set_lsp_keymaps = false,
+				configure_diagnostics = true,
+				cmp_capabilities = true,
+				manage_nvim_cmp = false,
+				call_servers = "local",
+				sign_icons = {
+					error = "",
+					warn = "",
+					hint = "",
+					info = "",
+				},
+			})
+
+			lsp_zero.ensure_installed({
+				"pyright",
+				"clangd",
+				"sumneko_lua",
+				"rust_analyzer",
+				"fortls",
+				"ltex",
+				"texlab",
+				"bashls",
+				"cmake",
+				"yamlls",
+			})
+
+			local navic = require("nvim-navic")
+			lsp_zero.on_attach(function(client, bufnr)
+				if client.server_capabilities.documentSymbolProvider then
+					-- attach navic if there's a suitable language server
+					navic.attach(client, bufnr)
+				end
+			end)
+
+			lsp_zero.setup()
+
+			-- lsp_zero disables virtual text, reenable it
+			vim.diagnostic.config({ virtual_text = true })
 		end,
 	},
 })
