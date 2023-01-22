@@ -383,7 +383,19 @@ require("lazy").setup({
 			local telescope = require("telescope")
 
 			wk.setup({
-				-- will probably follow shortly...
+				plugins = {
+					marks = false,
+					registers = false,
+					presets = {
+						operators = false,
+						motions = false,
+						text_objects = false,
+						windows = false,
+						nav = false,
+						z = false,
+						g = false,
+					},
+				},
 			})
 
 			wk.register({
@@ -403,9 +415,17 @@ require("lazy").setup({
 						},
 						f = {
 							function()
-								vim.lsp.buf.formatting_sync()
+								vim.lsp.buf.format()
 							end,
 							"auto-format",
+							-- TODO: doesn't seem to work properly in visual mode
+							mode = { "n", "v" },
+						},
+						h = {
+							function()
+								vim.lsp.buf.hover()
+							end,
+							"hover symbol",
 						},
 						o = { "<cmd>SymbolsOutline<cr>", "symbols outline" },
 					},
