@@ -88,6 +88,9 @@ vim.opt.rtp:prepend(lazypath)
 -------------------------------------------------------------------------------
 require("lazy").setup({
 
+	-- Restore cursor position when reopening file
+	"farmergreg/vim-lastplace",
+
 	-- copy over ssh with ansi control code
 	{
 		"ojroques/nvim-osc52",
