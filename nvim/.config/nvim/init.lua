@@ -58,18 +58,6 @@ map_key("n", "<C-J>", "<C-W><C-J>", { noremap = true, silent = true })
 map_key("n", "<C-K>", "<C-W><C-K>", { noremap = true, silent = true })
 map_key("n", "<C-L>", "<C-W><C-L>", { noremap = true, silent = true })
 map_key("n", "<C-H>", "<C-W><C-H>", { noremap = true, silent = true })
--- maximixe window
-map_key("n", "<Leader>m", ":res<CR>", { noremap = true, silent = true, desc = "maximize current window" })
--- back to equal window sizes
-map_key("n", "<Leader>n", "<C-W>=", { noremap = true, silent = true, desc = "normalize all window sizes" })
-
--- edit nvim config
-map_key(
-	"n",
-	"<Leader>c",
-	":e ~/.config/nvim/init.lua<CR>",
-	{ noremap = true, silent = true, desc = "edit neovim config" }
-)
 
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -92,21 +80,6 @@ require("lazy").setup({
 
 	-- Restore cursor position when reopening file
 	"farmergreg/vim-lastplace",
-
-	-- copy over ssh with ansi control code
-	{
-		"ojroques/nvim-osc52",
-
-		config = function()
-			local map_key = vim.keymap.set
-			map_key(
-				"v",
-				"<Leader>y",
-				require("osc52").copy_visual,
-				{ noremap = true, silent = true, desc = "osc52 copy" }
-			)
-		end,
-	},
 
 	-- automatic basic language support for many languages
 	-- (provides more robust indentation than tree-sitter)
@@ -298,12 +271,6 @@ require("lazy").setup({
 				-- doesn't do what we want
 				--open_on_setup = true,
 			})
-
-			local map_key = vim.keymap.set
-			map_key("n", "<Leader>g", function()
-				nvim_tree.find_file()
-				nvim_tree.focus()
-			end, { noremap = true, silent = true, desc = "find file in tree" })
 		end,
 	},
 
@@ -380,12 +347,15 @@ require("lazy").setup({
 			"nvim-telescope/telescope.nvim",
 			"junegunn/fzf.vim",
 			"neovim/nvim-lspconfig",
+			-- copy over ssh with ansi control code
+			"ojroques/nvim-osc52",
 		},
 
 		config = function()
 			local wk = require("which-key")
 			local telescope_builtin = require("telescope.builtin")
 			local telescope = require("telescope")
+			local nvim_tree_api = require("nvim-tree.api")
 
 			wk.setup({
 				plugins = {
@@ -436,6 +406,11 @@ require("lazy").setup({
 					},
 					j = {
 						name = "Vim",
+						w = { "<cmd>tabnew<cr>", "create new tab page" },
+						n = { "<C-W>=", "normalize all window sizes" },
+						m = { "<cmd>res<cr>", "maximize current window" },
+						e = { "<cmd>e ~/.config/nvim/init.lua<cr>", "edit neovim config" },
+						y = { require("osc52").copy_visual, "osc52 copy", mode = "v" },
 						l = { telescope_builtin.current_buffer_fuzzy_find, "buffer lines" },
 						b = { telescope_builtin.builtin, "telescope builtins" },
 						h = { telescope_builtin.help_tags, "vim help tags" },
@@ -445,6 +420,14 @@ require("lazy").setup({
 						f = { "<cmd>FzfFiles<cr>", "files" },
 						r = { "<cmd>FzfRg<cr>", "file contents" },
 						s = { telescope_builtin.symbols, "unicode symbols" },
+						g = {
+							function()
+								nvim_tree_api.tree.find_file(vim.api.nvim_buf_get_name(0))
+								nvim_tree_api.tree.focus()
+							end,
+							"find file in tree",
+						},
+						t = { nvim_tree_api.tree.toggle, "toggle nvim-tree" },
 					},
 				},
 			})
