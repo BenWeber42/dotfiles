@@ -37,6 +37,8 @@ opt.wildmode = { "longest", "list" }
 -- change splitting behaviour
 opt.splitright = true
 opt.splitbelow = true
+-- hide cmdline if not in use
+opt.cmdheight = 0
 -- enable systemm clipboard
 opt.clipboard:append("unnamedplus")
 opt.updatetime = 500
