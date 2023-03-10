@@ -20,7 +20,7 @@ opt.scrolloff = 5
 opt.fillchars:append({ eob = " ", diff = "╱" })
 -- show tabs and trailing spaces
 opt.list = true
-opt.listchars = { trail = "·", tab = "  ›" }
+opt.listchars = { trail = "⯀", tab = "  ›" }
 -- tab settings
 opt.shiftwidth = 2
 opt.tabstop = 2
