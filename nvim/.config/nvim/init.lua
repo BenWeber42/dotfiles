@@ -71,7 +71,7 @@ if not vim.loop.fs_stat(lazypath) then
 		lazypath,
 	})
 end
-vim.opt.rtp:prepend(lazypath)
+opt.rtp:prepend(lazypath)
 
 -------------------------------------------------------------------------------
 -- Plugins
@@ -101,7 +101,9 @@ require("lazy").setup({
 					additional_vim_regex_highlighting = true,
 				},
 				-- vim-polyglot indentation is much more robust than tree-sitter currently
-				indent = { enable = false },
+				-- TODO: indentation seems quite messy still
+				-- TODO: probably need a proper auto-pairs plugin
+				indent = { disable = { "python" } },
 			})
 		end,
 	},
@@ -116,7 +118,12 @@ require("lazy").setup({
 
 		build = function()
 			local nightfox = require("nightfox")
-			nightfox.init({ styles = { keywords = "italic" } })
+			nightfox.setup({
+				options = {
+					dim_inactive = true,
+					styles = { keywords = "italic" },
+				},
+			})
 			nightfox.compile()
 		end,
 
@@ -149,7 +156,7 @@ require("lazy").setup({
 
 		config = function()
 			require("indent_blankline").setup({
-				char = "│",
+				char = "┆",
 				show_trailing_blankline_indent = false,
 				show_current_context = true,
 				show_current_context_start = true,
@@ -187,6 +194,17 @@ require("lazy").setup({
 		end,
 	},
 
+	-- highlight border of active window
+	--{
+	--	"nvim-zh/colorful-winsep.nvim",
+
+	--	config = function()
+	--		require("colorful-winsep").setup({
+	--			symbols = { "─", "│", "┌", "┐", "└", "┘" },
+	--		})
+	--	end,
+	--},
+
 	-- status line
 	{
 		"nvim-lualine/lualine.nvim",
@@ -201,47 +219,86 @@ require("lazy").setup({
 
 			require("lualine").setup({
 				options = {
-					theme = "ayu_mirage",
-					component_separators = { left = "", right = "" },
-					section_separators = { left = "", right = "" },
-					disabled_filetypes = { "NvimTree", "Outline" },
+					--theme = "ayu_mirage",
+					component_separators = "",
+					section_separators = "",
+					-- FIXME: with globalstatus we don't really need to disable it
+					--disabled_filetypes = { "NvimTree", "Outline" },
+					globalstatus = true,
 				},
 
 				sections = {
 					lualine_a = { "mode" },
-					lualine_b = { "filename" },
+					lualine_b = {
+						{
+							"diff",
+							source = function()
+								local gitsigns = vim.b.gitsigns_status_dict
+								if gitsigns then
+									return {
+										added = gitsigns.added,
+										modified = gitsigns.changed,
+										removed = gitsigns.removed,
+									}
+								end
+							end,
+						},
+						"%l:%c/%L",
+						{ "filetype", icon_only = true },
+						{ "filename", path = 1 },
+					},
 					lualine_c = {
 						{ navic.get_location, cond = navic.is_available },
 					},
 					lualine_x = {},
-					lualine_y = {},
-					lualine_z = { "location" },
+					lualine_y = {
+						{
+							"tabs",
+							mode = 2,
+							--section_separators = { right = "" },
+							--component_separators = { right = "╱" },
+							--section_separators = "",
+							--component_separators = "╱",
+							component_separators = { right = "│" },
+							section_separators = { right = " " },
+							--separator = { left = "<", right = "" },
+							--separator = "/",
+							cond = function()
+								return 1 < #vim.api.nvim_list_tabpages()
+							end,
+							-- padding = 0,
+							tabs_color = {
+								active = "Normal",
+							},
+							--fmt = function(name, context)
+							--	--return " " .. name .. " "
+							--	return "╲ " .. name .. " ╱"
+							--end
+						},
+					},
+					lualine_z = {},
 				},
+			})
+			opt.showtabline = 0
+		end,
+	},
 
-				inactive_sections = {
-					lualine_a = { "mode" },
-					lualine_b = { "filename" },
-					lualine_c = {},
-					lualine_x = {},
-					lualine_y = {},
-					lualine_z = { "location" },
+	-- pretty tabs
+	{
+		"akinsho/bufferline.nvim",
+
+		enabled = false,
+
+		dependencies = "kyazdani42/nvim-web-devicons",
+
+		config = function()
+			require("bufferline").setup({
+				options = {
+					mode = "tabs",
+					separator_style = "slant",
+					always_show_bufferline = false,
+					show_duplicate_prefix = false,
 				},
-
-				-- wait until tabline can be shown only when there are multiple tabs
-				-- tabline = {
-				-- 	lualine_a = { {
-				-- 		"tabs",
-				-- 		mode = 2,
-				-- 		max_length = function()
-				-- 			return vim.o.columns
-				-- 		end,
-				-- 	} },
-				-- 	lualine_b = {},
-				-- 	lualine_c = {},
-				-- 	lualine_x = {},
-				-- 	lualine_y = {},
-				-- 	lualine_z = {},
-				-- },
 			})
 		end,
 	},
@@ -255,6 +312,7 @@ require("lazy").setup({
 		config = function()
 			local nvim_tree = require("nvim-tree")
 
+			-- TODO: try out work-flow without opening file tree on startup
 			-- work-around to have NvimTree auto start
 			vim.api.nvim_create_autocmd("VimEnter", {
 				pattern = "*",
@@ -422,6 +480,7 @@ require("lazy").setup({
 						s = { telescope_builtin.symbols, "unicode symbols" },
 						g = {
 							function()
+								-- FIXME: is broken if nvim-tree isn't open already (e.g., in new tab)
 								nvim_tree_api.tree.find_file(vim.api.nvim_buf_get_name(0))
 								nvim_tree_api.tree.focus()
 							end,
@@ -512,7 +571,10 @@ require("lazy").setup({
 				["<S-Tab>"] = cmp.mapping(prev_fun, { "i", "s", "c" }),
 				["<C-k>"] = cmp.mapping(prev_fun, { "i", "s", "c" }),
 
-				["<CR>"] = cmp.mapping.confirm({ select = true }),
+				["<C-d>"] = cmp.mapping.scroll_docs(4),
+				["<C-u>"] = cmp.mapping.scroll_docs(-4),
+
+				["<CR>"] = cmp.mapping.confirm(),
 			}
 
 			local formatting = {
@@ -532,6 +594,7 @@ require("lazy").setup({
 			}
 
 			cmp.setup({
+				preselect = cmp.PreselectMode.None,
 				snippet = {
 					expand = function(args)
 						require("luasnip").lsp_expand(args.body)
@@ -590,7 +653,11 @@ require("lazy").setup({
 				"weilbith/nvim-code-action-menu",
 				cmd = "CodeActionMenu",
 			},
-			"simrat39/symbols-outline.nvim",
+			{
+				"simrat39/symbols-outline.nvim",
+				-- TODO: doc
+				dependencies = "onsails/lspkind.nvim",
+			},
 			{
 				-- display diagnostics
 				"folke/trouble.nvim",
@@ -636,11 +703,40 @@ require("lazy").setup({
 				callback = require("nvim-lightbulb").update_lightbulb,
 			})
 
-			require("lsp_signature").setup({})
+			-- disable borders for LSP floats
+			local open_floating_preview = vim.lsp.util.open_floating_preview
+			vim.lsp.util.open_floating_preview = function(contents, syntax, opts, ...)
+				opts = opts or {}
+				opts.border = "none"
+				return open_floating_preview(contents, syntax, opts, ...)
+			end
 
-			require("symbols-outline").setup({
+			require("lsp_signature").setup({
+				bind = true, -- needed for border
+				handler_opts = { border = "none" },
+			})
+
+			-- TODO: clean-up and add documentation
+			-- TODO: Is this really better than using `CmpItemKind...`?!
+			-- Fix for https://github.com/simrat39/symbols-outline.nvim/issues/185
+			local lspkind = require("lspkind")
+			local symbols_outline = require("symbols-outline")
+			local symbols_outline_config = require("symbols-outline.config")
+
+			local symbols = {}
+			for name, icon_hl in pairs(symbols_outline_config.defaults.symbols) do
+				local hl = string.gsub(icon_hl.hl, "TS", "")
+				local icon = icon_hl.icon
+				if lspkind.presets.codicons[name] ~= nil then
+					icon = lspkind.presets.codicons[name]
+				end
+				symbols[name] = { icon = icon, hl = hl }
+			end
+
+			symbols_outline.setup({
 				relative_width = false,
 				width = 30,
+				symbols = symbols,
 				symbol_blacklist = {
 					"Variable",
 				},
