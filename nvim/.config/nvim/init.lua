@@ -524,7 +524,10 @@ require("lazy").setup({
 				["<S-Tab>"] = cmp.mapping(prev_fun, { "i", "s", "c" }),
 				["<C-k>"] = cmp.mapping(prev_fun, { "i", "s", "c" }),
 
-				["<CR>"] = cmp.mapping.confirm({ select = true }),
+				["<C-d>"] = cmp.mapping.scroll_docs(4),
+				["<C-u>"] = cmp.mapping.scroll_docs(-4),
+
+				["<CR>"] = cmp.mapping.confirm(),
 			}
 
 			local formatting = {
@@ -544,6 +547,7 @@ require("lazy").setup({
 			}
 
 			cmp.setup({
+				preselect = cmp.PreselectMode.None,
 				snippet = {
 					expand = function(args)
 						require("luasnip").lsp_expand(args.body)
