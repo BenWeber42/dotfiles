@@ -118,7 +118,12 @@ require("lazy").setup({
 
 		build = function()
 			local nightfox = require("nightfox")
-			nightfox.init({ styles = { keywords = "italic" } })
+			nightfox.setup({
+				options = {
+					dim_inactive = true,
+					styles = { keywords = "italic" },
+				},
+			})
 			nightfox.compile()
 		end,
 
