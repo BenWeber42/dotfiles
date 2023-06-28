@@ -256,22 +256,22 @@ require("lazy").setup({
 		end,
 	},
 
+	-- pretty tabs
+	{
+		"akinsho/bufferline.nvim",
 
-				-- wait until tabline can be shown only when there are multiple tabs
-				-- tabline = {
-				-- 	lualine_a = { {
-				-- 		"tabs",
-				-- 		mode = 2,
-				-- 		max_length = function()
-				-- 			return vim.o.columns
-				-- 		end,
-				-- 	} },
-				-- 	lualine_b = {},
-				-- 	lualine_c = {},
-				-- 	lualine_x = {},
-				-- 	lualine_y = {},
-				-- 	lualine_z = {},
-				-- },
+		enabled = false,
+
+		dependencies = "kyazdani42/nvim-web-devicons",
+
+		config = function()
+			require("bufferline").setup({
+				options = {
+					mode = "tabs",
+					separator_style = "slant",
+					always_show_bufferline = false,
+					show_duplicate_prefix = false,
+				},
 			})
 		end,
 	},
