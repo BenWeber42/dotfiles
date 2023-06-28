@@ -204,35 +204,58 @@ require("lazy").setup({
 		},
 
 		config = function()
-			local navic = require("nvim-navic")
-
 			require("lualine").setup({
 				options = {
-					theme = "ayu_mirage",
-					component_separators = { left = "", right = "" },
-					section_separators = { left = "", right = "" },
-					disabled_filetypes = { "NvimTree", "Outline" },
+					component_separators = "",
+					section_separators = "",
+					globalstatus = true,
 				},
 
 				sections = {
 					lualine_a = { "mode" },
-					lualine_b = { "filename" },
+					lualine_b = {
+						{
+							"diff",
+							source = function()
+								local gitsigns = vim.b.gitsigns_status_dict
+								if gitsigns then
+									return {
+										added = gitsigns.added,
+										modified = gitsigns.changed,
+										removed = gitsigns.removed,
+									}
+								end
+							end,
+						},
+						"%l:%c/%L",
+						{ "filetype", icon_only = true },
+						{ "filename", path = 1 },
+					},
 					lualine_c = {
-						{ navic.get_location, cond = navic.is_available },
+						{ "navic" },
 					},
 					lualine_x = {},
-					lualine_y = {},
-					lualine_z = { "location" },
+					lualine_y = {
+						{
+							"tabs",
+							mode = 2,
+							cond = function()
+								return 1 < #vim.api.nvim_list_tabpages()
+							end,
+							tabs_color = {
+								active = "Normal",
+							},
+							section_separators = { right = "" },
+							component_separators = { right = "╱" },
+						},
+					},
+					lualine_z = {},
 				},
+			})
+			opt.showtabline = 0
+		end,
+	},
 
-				inactive_sections = {
-					lualine_a = { "mode" },
-					lualine_b = { "filename" },
-					lualine_c = {},
-					lualine_x = {},
-					lualine_y = {},
-					lualine_z = { "location" },
-				},
 
 				-- wait until tabline can be shown only when there are multiple tabs
 				-- tabline = {
