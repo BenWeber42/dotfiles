@@ -718,7 +718,7 @@ require("lazy").setup({
 			lsp_zero.ensure_installed({
 				"pyright",
 				"clangd",
-				"sumneko_lua",
+				"lua_ls",
 				"rust_analyzer",
 				"fortls",
 				"ltex",
