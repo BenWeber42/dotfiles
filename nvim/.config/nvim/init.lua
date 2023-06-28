@@ -194,17 +194,6 @@ require("lazy").setup({
 		end,
 	},
 
-	-- highlight border of active window
-	{
-		"nvim-zh/colorful-winsep.nvim",
-
-		config = function()
-			require("colorful-winsep").setup({
-				symbols = { "─", "│", "┌", "┐", "└", "┘" },
-			})
-		end,
-	},
-
 	-- status line
 	{
 		"nvim-lualine/lualine.nvim",
