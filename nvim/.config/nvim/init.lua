@@ -71,7 +71,7 @@ if not vim.loop.fs_stat(lazypath) then
 		lazypath,
 	})
 end
-vim.opt.rtp:prepend(lazypath)
+opt.rtp:prepend(lazypath)
 
 -------------------------------------------------------------------------------
 -- Plugins
@@ -101,7 +101,9 @@ require("lazy").setup({
 					additional_vim_regex_highlighting = true,
 				},
 				-- vim-polyglot indentation is much more robust than tree-sitter currently
-				indent = { enable = false },
+				-- TODO: indentation seems quite messy still
+				-- TODO: probably need a proper auto-pairs plugin
+				indent = { disable = { "python" } },
 			})
 		end,
 	},
