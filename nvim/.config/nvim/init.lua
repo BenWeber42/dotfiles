@@ -265,6 +265,7 @@ require("lazy").setup({
 		config = function()
 			local nvim_tree = require("nvim-tree")
 
+			-- TODO: try out work-flow without opening file tree on startup
 			-- work-around to have NvimTree auto start
 			vim.api.nvim_create_autocmd("VimEnter", {
 				pattern = "*",
@@ -432,6 +433,7 @@ require("lazy").setup({
 						s = { telescope_builtin.symbols, "unicode symbols" },
 						g = {
 							function()
+								-- FIXME: is broken if nvim-tree isn't open already (e.g., in new tab)
 								nvim_tree_api.tree.find_file(vim.api.nvim_buf_get_name(0))
 								nvim_tree_api.tree.focus()
 							end,
