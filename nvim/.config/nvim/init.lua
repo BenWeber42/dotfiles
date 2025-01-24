@@ -456,6 +456,33 @@ require("lazy").setup({
 		},
 	},
 
+	-- coq support
+	{
+		"tomtomjhj/coq-lsp.nvim",
+
+		dependencies = {
+			{
+				"whonore/Coqtail", -- for ftdetect, syntax, basic ftplugin, etc
+
+				init = function()
+					-- Don't load Coqtail
+					vim.cmd([[
+						let g:loaded_coqtail = 1
+						let g:coqtail#supported = 0
+					]])
+				end,
+			},
+		},
+
+		config = function()
+			local coq_lsp = require("coq-lsp")
+			coq_lsp.setup({
+				lsp = { init_options = { show_notices_as_diagnostics = true } },
+			})
+			vim.api.nvim_create_user_command("CoqPanel", coq_lsp.panels, { desc = "Open coq panels" })
+		end,
+	},
+
 	-- completion engine
 	{
 		"hrsh7th/nvim-cmp",
