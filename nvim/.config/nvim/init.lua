@@ -47,6 +47,16 @@ opt.timeoutlen = 0
 -- my preferred diff options
 opt.diffopt = { "internal", "closeoff", "filler", "vertical" }
 
+-- make diagnostics float focusable
+vim.diagnostic.config({
+	float = {
+		focusable = true,
+		-- FIXME: doesn't seem to work
+		-- maybe better to go through vim.lsp.util.open_floating_preview
+		border = "solid",
+	},
+})
+
 -------------------------------------------------------------------------------
 -- Vim Key bindings
 -------------------------------------------------------------------------------
@@ -414,6 +424,18 @@ require("lazy").setup({
 							"hover symbol",
 						},
 						o = { "<cmd>SymbolsOutline<cr>", "symbols outline" },
+						a = {
+							function()
+								local _, winid = vim.diagnostic.open_float({
+									scope = "cursor",
+								})
+								-- focus it, so we can move around if the diagnostic is really big
+								if winid ~= nil then
+									vim.api.nvim_set_current_win(winid)
+								end
+							end,
+							"Show diagnostic of cursor in float",
+						},
 					},
 					j = {
 						name = "Vim",
