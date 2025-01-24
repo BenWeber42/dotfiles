@@ -339,6 +339,8 @@ require("lazy").setup({
 					layout_strategy = "flex",
 					layout_config = {
 						prompt_position = "top",
+						flip_columns = 200,
+						vertical = { mirror = true },
 					},
 					sorting_strategy = "ascending",
 				},
