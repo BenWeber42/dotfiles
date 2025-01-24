@@ -464,6 +464,7 @@ require("lazy").setup({
 							"find file in tree",
 						},
 						t = { nvim_tree_api.tree.toggle, "toggle nvim-tree" },
+						d = { "<cmd>call setreg('+', line('.'))<cr>", "copy current line number" },
 					},
 				},
 			})
@@ -645,6 +646,7 @@ require("lazy").setup({
 
 	{
 		"VonHeikemen/lsp-zero.nvim",
+		-- FIXME: update to "v2.x"
 		branch = "v1.x",
 
 		dependencies = {
