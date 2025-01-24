@@ -737,7 +737,7 @@ require("lazy").setup({
 				sign_icons = {
 					error = "",
 					warn = "",
-					hint = "",
+					hint = "󰌵",
 					info = "",
 				},
 			})
