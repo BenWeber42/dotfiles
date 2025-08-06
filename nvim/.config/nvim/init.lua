@@ -516,6 +516,7 @@ require("lazy").setup({
 		"hrsh7th/nvim-cmp",
 
 		dependencies = {
+			"neovim/nvim-lspconfig",
 			"hrsh7th/cmp-buffer",
 			"hrsh7th/cmp-path",
 			"hrsh7th/cmp-nvim-lsp",
@@ -622,21 +623,13 @@ require("lazy").setup({
 				sources = cmp.config.sources({
 					{ name = "cmdline" },
 					{ name = "cmdline_history" },
+					{ name = "path" },
 				}),
 				mapping = cmp.mapping.preset.cmdline(mapping),
 				formatting = formatting,
 			})
 
-			cmp.setup.cmdline("/", {
-				sources = cmp.config.sources({
-					{ name = "buffer" },
-					{ name = "cmdline_history" },
-				}),
-				mapping = cmp.mapping.preset.cmdline(mapping),
-				formatting = formatting,
-			})
-
-			cmp.setup.cmdline("?", {
+			cmp.setup.cmdline({"/", "?"}, {
 				sources = cmp.config.sources({
 					{ name = "buffer" },
 					{ name = "cmdline_history" },
@@ -647,46 +640,45 @@ require("lazy").setup({
 		end,
 	},
 
+
 	{
-		"VonHeikemen/lsp-zero.nvim",
-		-- FIXME: update to "v2.x"
-		branch = "v1.x",
-
+		"mason-org/mason-lspconfig.nvim",
 		dependencies = {
-
+			{ "mason-org/mason.nvim", opts = {} },
 			"neovim/nvim-lspconfig",
+
 			"hrsh7th/cmp-nvim-lsp",
 			"kosayoda/nvim-lightbulb",
 			"ray-x/lsp_signature.nvim",
 			{
+				-- FIXME: deprecated, replace with "aznhe21/actions-preview.nvim"?
 				"weilbith/nvim-code-action-menu",
 				cmd = "CodeActionMenu",
 			},
+			-- FIXME: deprecated, alternatives "hedyhli/outline.nvim", "stevearc/aerial.nvim"
 			"simrat39/symbols-outline.nvim",
 			{
 				-- display diagnostics
 				"folke/trouble.nvim",
 				dependencies = "kyazdani42/nvim-web-devicons",
-			},
-			"folke/neodev.nvim",
-			{
-				"jose-elias-alvarez/null-ls.nvim",
-				dependencies = "nvim-lua/plenary.nvim",
-			},
-			{
-				"williamboman/mason-lspconfig.nvim",
-				dependencies = {
-					"williamboman/mason.nvim",
-					"neovim/nvim-lspconfig",
+				cmd = "Trouble",
+				opts = {
+					modes = {
+						diagnostics_buffer = {
+							mode = "diagnostics", -- inherit from diagnostics mode
+							filter = { buf = 0 }, -- filter diagnostics to the current buffer
+						},
+					}
 				},
 			},
-			{
-				"jay-babu/mason-null-ls.nvim",
-				dependencies = {
-					"williamboman/mason.nvim",
-					"jose-elias-alvarez/null-ls.nvim",
-				},
-			},
+			{ "SmiteshP/nvim-navic", opts = { lsp = { auto_attach = true } } },
+			--{
+			--	"jay-babu/mason-null-ls.nvim",
+			--	dependencies = {
+			--		"williamboman/mason.nvim",
+			--		"jose-elias-alvarez/null-ls.nvim",
+			--	},
+			--},
 		},
 
 		config = function()
@@ -718,86 +710,196 @@ require("lazy").setup({
 				},
 			})
 
-			require("trouble").setup({
-				-- use "document_diagnostics" by default
-				mode = "document_diagnostics",
-				-- use my own defined signs
-				use_diagnostic_signs = true,
-			})
+			--require("neodev").setup({
+			--	setup_jsonls = false,
+			--	override = function(root_dir, library)
+			--		-- enable it for all lua files
+			--		library.enabled = true
+			--		library.runtime = true
+			--		library.types = true
+			--		library.plugins = true
+			--	end,
+			--})
 
-			require("neodev").setup({
-				setup_jsonls = false,
-				override = function(root_dir, library)
-					-- enable it for all lua files
-					library.enabled = true
-					library.runtime = true
-					library.types = true
-					library.plugins = true
-				end,
-			})
+			--local lsp_zero = require("lsp-zero")
 
-			-- null-ls isn't supported by lspconfig
-			local null_ls = require("null-ls")
-			null_ls.setup({
-				sources = {
-					null_ls.builtins.formatting.black,
-					null_ls.builtins.formatting.stylua,
-				},
-			})
+			--lsp_zero.set_preferences({
+			--	suggest_lsp_servers = true,
+			--	setup_servers_on_start = true,
+			--	set_lsp_keymaps = false,
+			--	configure_diagnostics = true,
+			--	cmp_capabilities = true,
+			--	manage_nvim_cmp = false,
+			--	call_servers = "local",
+			--	sign_icons = {
+			--		error = "",
+			--		warn = "",
+			--		hint = "󰌵",
+			--		info = "",
+			--	},
+			--})
 
-			require("mason").setup()
+			--lsp_zero.ensure_installed({
+			--	"pyright",
+			--	"clangd",
+			--	"lua_ls",
+			--	"rust_analyzer",
+			--	"fortls",
+			--	"ltex",
+			--	"texlab",
+			--	"bashls",
+			--	"cmake",
+			--	"yamlls",
+			--})
+
 			require("mason-lspconfig").setup()
-			require("mason-null-ls").setup({
-				ensure_installed = nil,
-				automatic_installation = true,
-				automatic_setup = false,
-			})
 
-			local lsp_zero = require("lsp-zero")
+			-- FIXME: pass nvim-cmp capabilities to lsp
+			---- Set up lspconfig.
+			--local capabilities = require('cmp_nvim_lsp').default_capabilities()
+			---- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
+			--require('lspconfig')['<YOUR_LSP_SERVER>'].setup {
+			--	capabilities = capabilities
+			--}
 
-			lsp_zero.set_preferences({
-				suggest_lsp_servers = true,
-				setup_servers_on_start = true,
-				set_lsp_keymaps = false,
-				configure_diagnostics = true,
-				cmp_capabilities = true,
-				manage_nvim_cmp = false,
-				call_servers = "local",
-				sign_icons = {
-					error = "",
-					warn = "",
-					hint = "󰌵",
-					info = "",
-				},
-			})
-
-			lsp_zero.ensure_installed({
-				"pyright",
-				"clangd",
-				"lua_ls",
-				"rust_analyzer",
-				"fortls",
-				"ltex",
-				"texlab",
-				"bashls",
-				"cmake",
-				"yamlls",
-			})
-
-			local navic = require("nvim-navic")
-			lsp_zero.on_attach(function(client, bufnr)
-				if client.server_capabilities.documentSymbolProvider then
-					-- attach navic if there's a suitable language server
-					navic.attach(client, bufnr)
-				end
-			end)
-
-			lsp_zero.setup()
+			--lsp_zero.setup()
 
 			-- lsp_zero disables virtual text, reenable it
 			vim.diagnostic.config({ virtual_text = true })
 		end,
 	},
+
+	--{
+	--	-- FIXME: deprecated :(
+	--	"VonHeikemen/lsp-zero.nvim",
+	--	-- FIXME: update to "v2.x"
+	--	branch = "v1.x",
+
+	--	dependencies = {
+
+	--		"hrsh7th/cmp-nvim-lsp",
+	--		"kosayoda/nvim-lightbulb",
+	--		"ray-x/lsp_signature.nvim",
+	--		{
+	--			-- FIXME: deprecated, replace with "aznhe21/actions-preview.nvim"?
+	--			"weilbith/nvim-code-action-menu",
+	--			cmd = "CodeActionMenu",
+	--		},
+	--		"simrat39/symbols-outline.nvim",
+	--		{
+	--			-- display diagnostics
+	--			"folke/trouble.nvim",
+	--			dependencies = "kyazdani42/nvim-web-devicons",
+	--			cmd = "Trouble",
+	--			opts = {
+	--				modes = {
+	--					diagnostics_buffer = {
+	--						mode = "diagnostics", -- inherit from diagnostics mode
+	--						filter = { buf = 0 }, -- filter diagnostics to the current buffer
+	--					},
+	--				}
+	--			},
+	--		},
+	--		-- FIXME: deprecated, replace with "folke/lazydev.nvim"?
+	--		--"folke/neodev.nvim",
+	--		--{
+	--		--	"jose-elias-alvarez/null-ls.nvim",
+	--		--	dependencies = "nvim-lua/plenary.nvim",
+	--		--},
+	--		--{
+	--		--	"jay-babu/mason-null-ls.nvim",
+	--		--	dependencies = {
+	--		--		"williamboman/mason.nvim",
+	--		--		"jose-elias-alvarez/null-ls.nvim",
+	--		--	},
+	--		--},
+	--	},
+
+	--	config = function()
+	--		-- some seful LSP commands
+	--		vim.api.nvim_create_user_command("LspFormat", function()
+	--			vim.lsp.buf.format()
+	--		end, { desc = "Format buffer using LSP servers." })
+
+	--		vim.api.nvim_create_user_command("LspRename", function()
+	--			vim.lsp.buf.rename()
+	--		end, { desc = "Rename symbol using LSP servers." })
+
+	--		vim.api.nvim_create_user_command("LspHover", function()
+	--			vim.lsp.buf.hover()
+	--		end, { desc = "Show info at cursor using LSP." })
+
+	--		vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+	--			pattern = "*",
+	--			callback = require("nvim-lightbulb").update_lightbulb,
+	--		})
+
+	--		require("lsp_signature").setup({})
+
+	--		require("symbols-outline").setup({
+	--			relative_width = false,
+	--			width = 30,
+	--			symbol_blacklist = {
+	--				"Variable",
+	--			},
+	--		})
+
+	--		--require("neodev").setup({
+	--		--	setup_jsonls = false,
+	--		--	override = function(root_dir, library)
+	--		--		-- enable it for all lua files
+	--		--		library.enabled = true
+	--		--		library.runtime = true
+	--		--		library.types = true
+	--		--		library.plugins = true
+	--		--	end,
+	--		--})
+
+	--		--local lsp_zero = require("lsp-zero")
+
+	--		--lsp_zero.set_preferences({
+	--		--	suggest_lsp_servers = true,
+	--		--	setup_servers_on_start = true,
+	--		--	set_lsp_keymaps = false,
+	--		--	configure_diagnostics = true,
+	--		--	cmp_capabilities = true,
+	--		--	manage_nvim_cmp = false,
+	--		--	call_servers = "local",
+	--		--	sign_icons = {
+	--		--		error = "",
+	--		--		warn = "",
+	--		--		hint = "󰌵",
+	--		--		info = "",
+	--		--	},
+	--		--})
+
+	--		--lsp_zero.ensure_installed({
+	--		--	"pyright",
+	--		--	"clangd",
+	--		--	"lua_ls",
+	--		--	"rust_analyzer",
+	--		--	"fortls",
+	--		--	"ltex",
+	--		--	"texlab",
+	--		--	"bashls",
+	--		--	"cmake",
+	--		--	"yamlls",
+	--		--})
+
+	--		require("nvim-navic")
+	--		--lsp_zero.on_attach(function(client, bufnr)
+	--		--	if client.server_capabilities.documentSymbolProvider then
+	--		--		-- attach navic if there's a suitable language server
+	--		--		navic.attach(client, bufnr)
+	--		--	end
+	--		--end)
+
+	--		--lsp_zero.setup()
+
+	--		-- lsp_zero disables virtual text, reenable it
+	--		vim.diagnostic.config({ virtual_text = true })
+	--	end,
+	--},
 })
 
 -- vim: noexpandtab tabstop=2 shiftwidth=2
