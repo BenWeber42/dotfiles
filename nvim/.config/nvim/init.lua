@@ -485,6 +485,8 @@ require("lazy").setup({
 	{
 		"tomtomjhj/coq-lsp.nvim",
 
+		enabled = false, -- currently not needed
+
 		dependencies = {
 			{
 				"whonore/Coqtail", -- for ftdetect, syntax, basic ftplugin, etc
