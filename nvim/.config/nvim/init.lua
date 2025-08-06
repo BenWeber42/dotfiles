@@ -73,6 +73,7 @@ vim.diagnostic.config({
 -------------------------------------------------------------------------------
 local map_key = vim.keymap.set
 vim.g.mapleader = " "
+vim.g.maplocalleader = "\\"
 
 -- easy window navigation
 map_key("n", "<C-J>", "<C-W><C-J>", { noremap = true, silent = true })
@@ -400,78 +401,71 @@ require("lazy").setup({
 						g = false,
 					},
 				},
-			})
-
-			wk.register({
-				["<leader>"] = {
-					l = {
-						name = "LSP",
-						d = { telescope_builtin.lsp_definitions, "definitions" },
-						r = { telescope_builtin.lsp_references, "references" },
-						s = { telescope_builtin.lsp_document_symbols, "document symbols" },
-						w = { telescope_builtin.lsp_workspace_symbols, "workspace symbols" },
-						e = { telescope_builtin.diagnostics, "document diagnostics" },
-						n = {
-							function()
-								vim.lsp.buf.rename()
-							end,
-							"rename symbol",
-						},
-						f = {
-							function()
-								vim.lsp.buf.format()
-							end,
-							"auto-format",
-							-- TODO: doesn't seem to work properly in visual mode
-							mode = { "n", "v" },
-						},
-						h = {
-							function()
-								vim.lsp.buf.hover()
-							end,
-							"hover symbol",
-						},
-						o = { "<cmd>SymbolsOutline<cr>", "symbols outline" },
-						a = {
-							function()
-								local _, winid = vim.diagnostic.open_float({
-									scope = "cursor",
-								})
-								-- focus it, so we can move around if the diagnostic is really big
-								if winid ~= nil then
-									vim.api.nvim_set_current_win(winid)
-								end
-							end,
-							"Show diagnostic of cursor in float",
-						},
+				spec = {
+					{ "<leader>l", group = "LSP" },
+					{ "<leader>ld", telescope_builtin.lsp_definitions, desc = "definitions" },
+					{ "<leader>lr", telescope_builtin.lsp_references, desc = "references" },
+					{ "<leader>ls", telescope_builtin.lsp_document_symbols, desc = "document symbols" },
+					{ "<leader>lw", telescope_builtin.lsp_workspace_symbols, desc = "workspace symbols" },
+					{ "<leader>le", telescope_builtin.diagnostics, desc = "document diagnostics" },
+					{ "<leader>ln",
+						function()
+							vim.lsp.buf.rename()
+						end,
+						desc = "rename symbol",
 					},
-					j = {
-						name = "Vim",
-						w = { "<cmd>tabnew<cr>", "create new tab page" },
-						n = { "<C-W>=", "normalize all window sizes" },
-						m = { "<cmd>res<cr>", "maximize current window" },
-						e = { "<cmd>e ~/.config/nvim/init.lua<cr>", "edit neovim config" },
-						y = { require("osc52").copy_visual, "osc52 copy", mode = "v" },
-						l = { telescope_builtin.current_buffer_fuzzy_find, "buffer lines" },
-						b = { telescope_builtin.builtin, "telescope builtins" },
-						h = { telescope_builtin.help_tags, "vim help tags" },
-						c = { telescope_builtin.commands, "vim commands" },
-						j = { telescope_builtin.jumplist, "vim jumps" },
-						o = { telescope.extensions.recent_files.pick, "recent files" },
-						f = { "<cmd>FzfFiles<cr>", "files" },
-						r = { "<cmd>FzfRg<cr>", "file contents" },
-						s = { telescope_builtin.symbols, "unicode symbols" },
-						g = {
-							function()
-								-- FIXME: is broken if nvim-tree isn't open already (e.g., in new tab)
-								nvim_tree_api.tree.find_file(vim.api.nvim_buf_get_name(0))
-								nvim_tree_api.tree.focus()
-							end,
-							"find file in tree",
-						},
-						t = { nvim_tree_api.tree.toggle, "toggle nvim-tree" },
-						d = { "<cmd>call setreg('+', line('.'))<cr>", "copy current line number" },
+					{ "<leader>lf",
+						function()
+							vim.lsp.buf.format()
+						end,
+						desc = "auto-format",
+						-- TODO: doesn't seem to work properly in visual mode
+						mode = { "n", "v" },
 					},
+					{ "<leader>lh",
+						function()
+							vim.lsp.buf.hover()
+						end,
+						desc = "hover symbol",
+					},
+					{ "<leader>lo", "<cmd>SymbolsOutline<cr>", desc = "symbols outline" },
+					{ "<leader>la",
+						function()
+							local _, winid = vim.diagnostic.open_float({
+								scope = "cursor",
+							})
+							-- focus it, so we can move around if the diagnostic is really big
+							if winid ~= nil then
+								vim.api.nvim_set_current_win(winid)
+							end
+						end,
+						desc = "Show diagnostic of cursor in float",
+					},
+					{ "<leader>j", group = "Vim" },
+					{ "<leader>jw", "<cmd>tabnew<cr>", desc = "create new tab page" },
+					{ "<leader>jn", "<C-W>=", desc = "normalize all window sizes" },
+					{ "<leader>jm", "<cmd>res<cr>", desc = "maximize current window" },
+					{ "<leader>je", "<cmd>e ~/.config/nvim/init.lua<cr>", desc = "edit neovim config" },
+					{ "<leader>jy", require("osc52").copy_visual, desc = "osc52 copy", mode = "v" },
+					{ "<leader>jl", telescope_builtin.current_buffer_fuzzy_find, desc = "buffer lines" },
+					{ "<leader>jb", telescope_builtin.builtin, desc = "telescope builtins" },
+					{ "<leader>jh", telescope_builtin.help_tags, desc = "vim help tags" },
+					{ "<leader>jc", telescope_builtin.commands, desc = "vim commands" },
+					{ "<leader>jj", telescope_builtin.jumplist, desc = "vim jumps" },
+					{ "<leader>jo", telescope.extensions.recent_files.pick, desc = "recent files" },
+					{ "<leader>jf", "<cmd>FzfFiles<cr>", desc = "files" },
+					{ "<leader>jr", "<cmd>FzfRg<cr>", desc = "file contents" },
+					{ "<leader>js", telescope_builtin.symbols, desc = "unicode symbols" },
+					{ "<leader>jg",
+						function()
+							-- FIXME: is broken if nvim-tree isn't open already (e.g., in new tab)
+							nvim_tree_api.tree.find_file(vim.api.nvim_buf_get_name(0))
+							nvim_tree_api.tree.focus()
+						end,
+						desc = "find file in tree",
+					},
+					{ "<leader>jt", nvim_tree_api.tree.toggle, desc = "toggle nvim-tree" },
+					{ "<leader>jd", "<cmd>call setreg('+', line('.'))<cr>", desc = "copy current line number" },
 				},
 			})
 		end,
