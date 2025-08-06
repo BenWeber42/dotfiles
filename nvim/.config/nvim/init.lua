@@ -49,6 +49,7 @@ opt.timeoutlen = 0
 -- my preferred diff options
 opt.diffopt = { "internal", "closeoff", "filler", "vertical" }
 
+
 -- make diagnostics float focusable
 vim.diagnostic.config({
 	float = {
@@ -57,6 +58,14 @@ vim.diagnostic.config({
 		-- maybe better to go through vim.lsp.util.open_floating_preview
 		border = "solid",
 	},
+	signs = {
+		text = {
+			[vim.diagnostic.severity.ERROR] = "",
+			[vim.diagnostic.severity.WARN]  = "",
+			[vim.diagnostic.severity.HINT]  = "",
+			[vim.diagnostic.severity.INFO]  = "",
+		}
+	}
 })
 
 -------------------------------------------------------------------------------
