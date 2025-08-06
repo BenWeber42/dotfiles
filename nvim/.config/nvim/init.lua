@@ -222,57 +222,54 @@ require("lazy").setup({
 			"SmiteshP/nvim-navic", -- lsp bread crumbs
 		},
 
-		config = function()
-			require("lualine").setup({
-				options = {
-					component_separators = "",
-					section_separators = "",
-					globalstatus = true,
-				},
+		opts = {
+			options = {
+				component_separators = "",
+				section_separators = "",
+				globalstatus = true,
+			},
 
-				sections = {
-					lualine_a = { "mode" },
-					lualine_b = {
-						{
-							"diff",
-							source = function()
-								local gitsigns = vim.b.gitsigns_status_dict
-								if gitsigns then
-									return {
-										added = gitsigns.added,
-										modified = gitsigns.changed,
-										removed = gitsigns.removed,
-									}
-								end
-							end,
-						},
-						"%l:%c/%L",
-						{ "filetype", icon_only = true },
-						{ "filename", path = 1 },
+			sections = {
+				lualine_a = { "mode" },
+				lualine_b = {
+					{
+						"diff",
+						source = function()
+							local gitsigns = vim.b.gitsigns_status_dict
+							if gitsigns then
+								return {
+									added = gitsigns.added,
+									modified = gitsigns.changed,
+									removed = gitsigns.removed,
+								}
+							end
+						end,
 					},
-					lualine_c = {
-						{ "navic" },
-					},
-					lualine_x = {},
-					lualine_y = {
-						{
-							"tabs",
-							mode = 2,
-							cond = function()
-								return 1 < #vim.api.nvim_list_tabpages()
-							end,
-							tabs_color = {
-								active = "Normal",
-							},
-							section_separators = { right = "" },
-							component_separators = { right = "╱" },
-						},
-					},
-					lualine_z = {},
+					"%l:%c/%L",
+					{ "filetype", icon_only = true },
+					{ "filename", path = 1 },
 				},
-			})
-			opt.showtabline = 0
-		end,
+				lualine_c = {
+					{ "navic" },
+				},
+				lualine_x = {},
+				lualine_y = {
+					{
+						"tabs",
+						mode = 2,
+						cond = function()
+							return 1 < #vim.api.nvim_list_tabpages()
+						end,
+						tabs_color = {
+							active = "Normal",
+						},
+						section_separators = { right = "" },
+						component_separators = { right = "╱" },
+					},
+				},
+				lualine_z = {},
+			},
+		},
 	},
 
 	-- file tree
