@@ -15,6 +15,9 @@ PS1="\e[43m\e[30m \d, \t \e[m\$(status_code)\e[44m\e[30m \u@\h \e[m\e[46m\e[30m 
 # enable vi mode
 set -o vi
 
+# complete commands and files for sudo
+complete -cf sudo
+
 [ -f /usr/share/fzf/key-bindings.bash ] && source /usr/share/fzf/key-bindings.bash
 [ -f /usr/share/fzf/completion.bash ] && source /usr/share/fzf/completion.bash
 
