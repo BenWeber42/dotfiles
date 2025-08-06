@@ -5,7 +5,7 @@
 HISTSIZE=100000
 
 alias ls='ls --color=auto'
-alias ll='exa -la'
+alias ll='ls -la'
 
 status_code() {
   if [ $? -eq 0 ]; then echo -e "\e[42m\e[30m 👍 \e[m"; else echo -e "\e[41m\e[30m 👎 $? \e[m"; fi
