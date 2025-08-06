@@ -39,6 +39,8 @@ opt.splitright = true
 opt.splitbelow = true
 -- hide cmdline if not in use
 opt.cmdheight = 0
+-- disable tabline becase we show tabs in the statusline instead
+opt.showtabline = 0
 -- enable systemm clipboard
 opt.clipboard:append("unnamedplus")
 opt.updatetime = 500
