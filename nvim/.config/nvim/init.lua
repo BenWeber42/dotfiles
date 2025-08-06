@@ -141,6 +141,10 @@ require("lazy").setup({
 		priority = 1000,
 
 		build = function()
+			require("nightfox").compile()
+		end,
+
+		config = function()
 			local nightfox = require("nightfox")
 			nightfox.setup({
 				options = {
@@ -148,10 +152,6 @@ require("lazy").setup({
 					styles = { keywords = "italic" },
 				},
 			})
-			nightfox.compile()
-		end,
-
-		config = function()
 			vim.cmd("colorscheme nordfox")
 		end,
 	},
