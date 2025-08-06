@@ -205,14 +205,12 @@ require("lazy").setup({
 
 		dependencies = "nvim-lua/plenary.nvim",
 
-		config = function()
-			require("todo-comments").setup({
-				highlight = {
-					pattern = [[<(KEYWORDS)>]],
-					keyword = "bg",
-				},
-			})
-		end,
+		opts = {
+			highlight = {
+				pattern = [[<(KEYWORDS)>]],
+				keyword = "bg",
+			},
+		},
 	},
 
 	-- status line
