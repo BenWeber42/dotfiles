@@ -387,6 +387,7 @@ require("lazy").setup({
 			local telescope_builtin = require("telescope.builtin")
 			local telescope = require("telescope")
 			local nvim_tree_api = require("nvim-tree.api")
+			local outline = require("outline")
 
 			wk.setup({
 				plugins = {
@@ -429,7 +430,7 @@ require("lazy").setup({
 						end,
 						desc = "hover symbol",
 					},
-					{ "<leader>lo", "<cmd>SymbolsOutline<cr>", desc = "symbols outline" },
+					{ "<leader>lo", function() outline.toggle({}) end, desc = "symbols outline" },
 					{ "<leader>la",
 						function()
 							local _, winid = vim.diagnostic.open_float({
@@ -655,8 +656,26 @@ require("lazy").setup({
 				"weilbith/nvim-code-action-menu",
 				cmd = "CodeActionMenu",
 			},
-			-- FIXME: deprecated, alternatives "hedyhli/outline.nvim", "stevearc/aerial.nvim"
-			"simrat39/symbols-outline.nvim",
+			{
+				"hedyhli/outline.nvim",
+				opts = {
+					outline_window = {
+						width = 30,
+						relative_width = false,
+					},
+					symbols = {
+						filter = {
+							"Variable",
+							exclude = true,
+						},
+						icon_source = "lspkind",
+					},
+					providers = {
+						priority = { 'lsp', 'markdown', 'treesitter' },
+					},
+				},
+				dependencies = { 'epheien/outline-treesitter-provider.nvim' },
+			},
 			{
 				-- display diagnostics
 				"folke/trouble.nvim",
@@ -701,14 +720,6 @@ require("lazy").setup({
 			})
 
 			require("lsp_signature").setup({})
-
-			require("symbols-outline").setup({
-				relative_width = false,
-				width = 30,
-				symbol_blacklist = {
-					"Variable",
-				},
-			})
 
 			--require("neodev").setup({
 			--	setup_jsonls = false,
