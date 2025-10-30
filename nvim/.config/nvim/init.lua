@@ -168,11 +168,8 @@ require("lazy").setup({
 
 	-- colorize color codes
 	{
-		"norcalli/nvim-colorizer.lua",
-
-		config = function()
-			require("colorizer").setup()
-		end,
+		"brenoprata10/nvim-highlight-colors",
+		opts = { render = "virtual" },
 	},
 
 	-- indentation lines
