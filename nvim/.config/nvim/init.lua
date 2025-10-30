@@ -427,7 +427,7 @@ require("lazy").setup({
 						end,
 						desc = "hover symbol",
 					},
-					{ "<leader>lo", function() outline.toggle({}) end, desc = "symbols outline" },
+					{ "<leader>lo", outline.toggle, desc = "symbols outline" },
 					{ "<leader>la",
 						function()
 							local _, winid = vim.diagnostic.open_float({
