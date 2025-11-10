@@ -3,6 +3,11 @@
 -------------------------------------------------------------------------------
 local opt = vim.opt
 
+
+-- strongly recommended by nvim-tree
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
 -- enable true color
 opt.termguicolors = true
 opt.cursorline = true
@@ -262,27 +267,14 @@ require("lazy").setup({
 
 		dependencies = "kyazdani42/nvim-web-devicons",
 
-		config = function()
-			local nvim_tree = require("nvim-tree")
-
-			-- TODO: try out work-flow without opening file tree on startup
-			-- work-around to have NvimTree auto start
-			vim.api.nvim_create_autocmd("VimEnter", {
-				pattern = "*",
-				-- # NOTE: `require("nvim-tree").open` doesn't seem to work
-				command = "NvimTreeOpen",
-			})
-			vim.api.nvim_create_autocmd("VimEnter", {
-				pattern = "*",
-				command = "wincmd p",
-			})
-
-			nvim_tree.setup({
-				renderer = { indent_markers = { enable = true }, highlight_git = true },
-				-- doesn't do what we want
-				--open_on_setup = true,
-			})
-		end,
+		opts = {
+			renderer = {
+				indent_markers = {
+					enable = true,
+				},
+				highlight_git = true,
+			},
+		}
 	},
 
 	-- original fzf
