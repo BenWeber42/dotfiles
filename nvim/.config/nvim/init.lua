@@ -114,23 +114,9 @@ require("lazy").setup({
 	-- proper grammar parsing
 	{
 		"nvim-treesitter/nvim-treesitter",
-
+		branch = "main",
+		lazy = false,
 		build = ":TSUpdate",
-
-		config = function()
-			require("nvim-treesitter.configs").setup({
-				ensure_installed = "all",
-				highlight = {
-					enable = true,
-					-- enables traditional regex syntax highlighting needed by vim-polyglot indentation
-					additional_vim_regex_highlighting = true,
-				},
-				-- vim-polyglot indentation is much more robust than tree-sitter currently
-				-- TODO: indentation seems quite messy still
-				-- TODO: probably need a proper auto-pairs plugin
-				indent = { disable = { "python" } },
-			})
-		end,
 	},
 
 	-- nordfox colorscheme
