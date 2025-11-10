@@ -114,7 +114,7 @@ require("lazy").setup({
 	-- automatic basic language support for many languages
 	-- (provides more robust indentation than tree-sitter)
 	-- NOTE: maybe only use regex based indentation for python?
-	"sheerun/vim-polyglot",
+	{ "sheerun/vim-polyglot", enabled = false },
 
 	-- proper grammar parsing
 	{
