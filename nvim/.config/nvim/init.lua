@@ -58,10 +58,7 @@ opt.diffopt = { "internal", "closeoff", "filler", "vertical" }
 -- make diagnostics float focusable
 vim.diagnostic.config({
 	float = {
-		focusable = true,
-		-- FIXME: doesn't seem to work
-		-- maybe better to go through vim.lsp.util.open_floating_preview
-		border = "solid",
+		border = "rounded",
 	},
 	signs = {
 		text = {
