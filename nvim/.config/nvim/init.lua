@@ -371,9 +371,13 @@ require("lazy").setup({
 		end,
 	},
 
-	-- hook neovim's builtin ui elements
-	-- FIXME: deprecated :(
-	"stevearc/dressing.nvim",
+	-- nice vim.ui.input
+	{
+		"folke/snacks.nvim",
+		opts = {
+			input = { enabled = true },
+		},
+	},
 
 	-- simple key bindings menu
 	{
