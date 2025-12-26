@@ -267,14 +267,45 @@ require("lazy").setup({
 
 		dependencies = "kyazdani42/nvim-web-devicons",
 
-		opts = {
-			renderer = {
-				indent_markers = {
-					enable = true,
-				},
-				highlight_git = true,
-			},
-		}
+		config = function()
+			local api = require("nvim-tree.api")
+
+			-- function for left to assign to keybindings
+			local lefty = function ()
+					local node_at_cursor = api.tree.get_node_under_cursor()
+					-- if it's a node and it's open, close
+					if node_at_cursor.nodes and node_at_cursor.open then
+							api.node.open.edit()
+					-- else left jumps up to parent
+					else
+							api.node.navigate.parent()
+					end
+			end
+			-- function for right to assign to keybindings
+			local righty = function ()
+					local node_at_cursor = api.tree.get_node_under_cursor()
+					-- if it's a closed node, open it
+					if node_at_cursor.nodes and not node_at_cursor.open then
+							api.node.open.edit()
+					end
+			end
+
+			require("nvim-tree").setup {
+					renderer = {
+						indent_markers = {
+							enable = true,
+						},
+						highlight_git = true,
+					},
+					on_attach = function (bufnr)
+							api.config.mappings.default_on_attach(bufnr)
+							vim.keymap.set("n", "h", lefty , { buffer = bufnr, desc = "Close/Goto parent" } )
+							vim.keymap.set("n", "<Left>", lefty , { buffer = bufnr, desc = "Close/Goto parent" } )
+							vim.keymap.set("n", "<Right>", righty , { buffer = bufnr, desc = "Open" } )
+							vim.keymap.set("n", "l", righty , { buffer = bufnr, desc = "Open" } )
+					end,
+			}
+		end,
 	},
 
 	-- original fzf
@@ -323,6 +354,7 @@ require("lazy").setup({
 						vertical = { mirror = true },
 					},
 					sorting_strategy = "ascending",
+					-- preview = { treesitter = false }, -- telescope seems buggy with new nvim-tresitter
 				},
 				pickers = {
 					diagnostics = {
@@ -422,7 +454,13 @@ require("lazy").setup({
 					{ "<leader>jm", "<cmd>res<cr>", desc = "maximize current window" },
 					{ "<leader>je", "<cmd>e ~/.config/nvim/init.lua<cr>", desc = "edit neovim config" },
 					{ "<leader>jy", require("osc52").copy_visual, desc = "osc52 copy", mode = "v" },
-					{ "<leader>jl", telescope_builtin.current_buffer_fuzzy_find, desc = "buffer lines" },
+					{ "<leader>jl",
+						function()
+							-- telescope seems buggy with new nvim-tresitter
+							telescope_builtin.current_buffer_fuzzy_find({ results_ts_highlight = false })
+						end,
+						desc = "buffer lines"
+					},
 					{ "<leader>jb", telescope_builtin.builtin, desc = "telescope builtins" },
 					{ "<leader>jh", telescope_builtin.help_tags, desc = "vim help tags" },
 					{ "<leader>jc", telescope_builtin.commands, desc = "vim commands" },
@@ -433,9 +471,8 @@ require("lazy").setup({
 					{ "<leader>js", telescope_builtin.symbols, desc = "unicode symbols" },
 					{ "<leader>jg",
 						function()
-							-- FIXME: is broken if nvim-tree isn't open already (e.g., in new tab)
-							nvim_tree_api.tree.find_file(vim.api.nvim_buf_get_name(0))
-							nvim_tree_api.tree.focus()
+							-- Could improve: Keep open if different file needs to be focused
+							nvim_tree_api.tree.toggle({ find_file = true })
 						end,
 						desc = "find file in tree",
 					},
