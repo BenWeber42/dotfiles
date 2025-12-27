@@ -469,8 +469,7 @@ require("lazy").setup({
 					{ "<leader>js", telescope_builtin.symbols, desc = "unicode symbols" },
 					{ "<leader>jg",
 						function()
-							-- Could improve: Keep open if different file needs to be focused
-							nvim_tree_api.tree.toggle({ find_file = true })
+							nvim_tree_api.tree.open({ find_file = true })
 						end,
 						desc = "find file in tree",
 					},
