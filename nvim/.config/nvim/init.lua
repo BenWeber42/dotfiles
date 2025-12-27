@@ -57,6 +57,7 @@ opt.diffopt = { "internal", "closeoff", "filler", "vertical" }
 
 -- make diagnostics float focusable
 vim.diagnostic.config({
+	virtual_text = true,
 	float = {
 		border = "rounded",
 	},
@@ -743,9 +744,6 @@ require("lazy").setup({
 			--require('lspconfig')['<YOUR_LSP_SERVER>'].setup {
 			--	capabilities = capabilities
 			--}
-
-			-- lsp_zero disables virtual text, reenable it
-			vim.diagnostic.config({ virtual_text = true })
 		end,
 	},
 })
