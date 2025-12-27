@@ -737,13 +737,9 @@ require("lazy").setup({
 			require("lsp_signature").setup({})
 			require("mason-lspconfig").setup()
 
-			-- FIXME: pass nvim-cmp capabilities to lsp
-			---- Set up lspconfig.
-			--local capabilities = require('cmp_nvim_lsp').default_capabilities()
-			---- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
-			--require('lspconfig')['<YOUR_LSP_SERVER>'].setup {
-			--	capabilities = capabilities
-			--}
+			-- Set up lspconfig.
+			local capabilities = require('cmp_nvim_lsp').default_capabilities()
+			vim.lsp.config("*", { capabilities = capabilities })
 		end,
 	},
 })
