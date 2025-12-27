@@ -386,6 +386,7 @@ require("lazy").setup({
 			"neovim/nvim-lspconfig",
 			-- copy over ssh with ansi control code
 			"ojroques/nvim-osc52",
+			"rachartier/tiny-code-action.nvim",
 		},
 
 		config = function()
@@ -449,6 +450,7 @@ require("lazy").setup({
 						end,
 						desc = "Show diagnostic of cursor in float",
 					},
+					{ "<leader>lc", require("tiny-code-action").code_action, desc = "code action" },
 					{ "<leader>j", group = "Vim" },
 					{ "<leader>jw", "<cmd>tabnew<cr>", desc = "create new tab page" },
 					{ "<leader>jn", "<C-W>=", desc = "normalize all window sizes" },
@@ -663,9 +665,16 @@ require("lazy").setup({
 			"kosayoda/nvim-lightbulb",
 			"ray-x/lsp_signature.nvim",
 			{
-				-- FIXME: deprecated, replace with "aznhe21/actions-preview.nvim"?
-				"weilbith/nvim-code-action-menu",
-				cmd = "CodeActionMenu",
+				"rachartier/tiny-code-action.nvim",
+				dependencies = "nvim-lua/plenary.nvim",
+				event = "LspAttach",
+				opts = {
+					backend = "delta",
+					picker = {
+						"telescope",
+						opts = { },
+					},
+				},
 			},
 			{
 				"hedyhli/outline.nvim",
