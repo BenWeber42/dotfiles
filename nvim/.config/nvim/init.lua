@@ -457,13 +457,7 @@ require("lazy").setup({
 					{ "<leader>jm", "<cmd>res<cr>", desc = "maximize current window" },
 					{ "<leader>je", "<cmd>e ~/.config/nvim/init.lua<cr>", desc = "edit neovim config" },
 					{ "<leader>jy", require("osc52").copy_visual, desc = "osc52 copy", mode = "v" },
-					{ "<leader>jl",
-						function()
-							-- telescope seems buggy with new nvim-tresitter
-							telescope_builtin.current_buffer_fuzzy_find({ results_ts_highlight = false })
-						end,
-						desc = "buffer lines"
-					},
+					{ "<leader>jl", telescope_builtin.current_buffer_fuzzy_find, desc = "buffer lines" },
 					{ "<leader>jb", telescope_builtin.builtin, desc = "telescope builtins" },
 					{ "<leader>jh", telescope_builtin.help_tags, desc = "vim help tags" },
 					{ "<leader>jc", telescope_builtin.commands, desc = "vim commands" },
