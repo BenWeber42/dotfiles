@@ -120,6 +120,12 @@ require("lazy").setup({
 		branch = "main",
 		lazy = false,
 		build = ":TSUpdate",
+		dependencies = {
+			"nvim-treesitter/nvim-treesitter-context",
+			opts = {
+				multiline_threshold = 1,
+			},
+		},
 	},
 
 	-- nordfox colorscheme
