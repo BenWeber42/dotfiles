@@ -391,13 +391,10 @@ require("lazy").setup({
 		},
 
 		config = function()
-			local wk = require("which-key")
 			local telescope_builtin = require("telescope.builtin")
-			local telescope = require("telescope")
 			local nvim_tree_api = require("nvim-tree.api")
-			local outline = require("outline")
 
-			wk.setup({
+			require("which-key").setup({
 				plugins = {
 					marks = false,
 					registers = false,
@@ -438,7 +435,7 @@ require("lazy").setup({
 						end,
 						desc = "hover symbol",
 					},
-					{ "<leader>lo", outline.toggle, desc = "symbols outline" },
+					{ "<leader>lo", require("outline").toggle, desc = "symbols outline" },
 					{ "<leader>la",
 						function()
 							local _, winid = vim.diagnostic.open_float({
@@ -463,7 +460,7 @@ require("lazy").setup({
 					{ "<leader>jh", telescope_builtin.help_tags, desc = "vim help tags" },
 					{ "<leader>jc", telescope_builtin.commands, desc = "vim commands" },
 					{ "<leader>jj", telescope_builtin.jumplist, desc = "vim jumps" },
-					{ "<leader>jo", telescope.extensions.recent_files.pick, desc = "recent files" },
+					{ "<leader>jo", require("telescope").extensions.recent_files.pick, desc = "recent files" },
 					{ "<leader>jf", "<cmd>FzfFiles<cr>", desc = "files" },
 					{ "<leader>jr", "<cmd>FzfRg<cr>", desc = "file contents" },
 					{ "<leader>js", telescope_builtin.symbols, desc = "unicode symbols" },
