@@ -259,6 +259,18 @@ require("lazy").setup({
 		},
 	},
 
+	-- code mini map (on right side)
+	{
+		"Isrothy/neominimap.nvim",
+
+		init = function()
+			vim.g.neominimap = {
+				auto_enable = false,
+				layout = "split",
+			}
+		end,
+	},
+
 	-- file tree
 	{
 		"kyazdani42/nvim-tree.lua",
@@ -450,6 +462,7 @@ require("lazy").setup({
 					},
 					{ "<leader>lc", require("tiny-code-action").code_action, desc = "code action" },
 					{ "<leader>j", group = "Vim" },
+					{ "<leader>ja", require('neominimap.api').toggle, desc = "toggle minimap" },
 					{ "<leader>jw", "<cmd>tabnew<cr>", desc = "create new tab page" },
 					{ "<leader>jn", "<C-W>=", desc = "normalize all window sizes" },
 					{ "<leader>jm", "<cmd>res<cr>", desc = "maximize current window" },
